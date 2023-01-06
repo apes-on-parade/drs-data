@@ -1,0 +1,14 @@
+.item {
+	display: inline-block;
+	width: 30vw;
+	min-width:320px;
+	min-height: 3em;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+	padding: 3px;
+	margin: 15px 10px;
+}
+
+.item-title {
+	font-weight: bold;
+}
