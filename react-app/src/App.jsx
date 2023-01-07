@@ -1,7 +1,13 @@
 import React from 'react'
 
-const App = () => (
-  <h1>Minimal React Starter Kit</h1>
-)
+//import '@font....css'
+//import './app.css'
 
+import SearchScene from './scenes/search.jsx'
+
+const App = () => {
+	return <SearchScene />
+	}
+
+export {App}
 export default App

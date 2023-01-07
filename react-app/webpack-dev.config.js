@@ -11,18 +11,13 @@ module.exports = {
 	output: {
 		filename: 'index.js',
 		chunkFilename: '[name].chunk.js',
-		path: path.resolve(__dirname, 'tmp/webpack'),
+		//path: path.resolve(__dirname, 'tmp/webpack'),
 		},
 	module: {
 		...base.module,
 		rules: [
 			...base.module.rules,
 			// Maybe later
-			// {
-			// 	// css-loader
-			// 	test: /\.css$/,
-			// 	use: ['style-loader', 'css-loader', 'postcss-loader'],
-			// },
 			// {
 			// 	// sass/scss loader to load sass-scss style files
 			// 	test: /\.(sass|scss)$/,
