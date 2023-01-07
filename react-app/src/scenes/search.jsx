@@ -95,7 +95,7 @@ const SearchScene = (props) => {
 
 	function changeQueryText(event){setQueryText(event.target.value)}
 	function* loadIssuers(onCancel){
-		const rawResponse = yield fetch('/issuers.csv',canceller(onCancel))
+		const rawResponse = yield fetch('issuers.csv',canceller(onCancel))
 		const responseText = yield rawResponse.text()
 		// This is NOT a general purpose CSV parser!!
 		// It works only because I know I specifically encode strings in a JSON compatible notation
