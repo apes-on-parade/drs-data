@@ -1,0 +1,6 @@
+# Don't accidentally check in bulky data
+*.csv
+*.tsv
+*.json
+*.jsonl
+*.ndjson
