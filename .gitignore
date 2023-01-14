@@ -1,4 +1,10 @@
 tmp
+# Don't accidentally check in bulky data
+*.csv
+*.tsv
+*.jsonl
+*.ndjson
+
 
 ### Auto-generated default stuff below
 # Logs

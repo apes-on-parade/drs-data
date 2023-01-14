@@ -1,0 +1,11 @@
+{
+  "name": "drs-data-scripts",
+  "version": "0.0.0",
+  "description": "ETL scripts for DRS data",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "UNLICENSED"
+}
