@@ -10,14 +10,14 @@ main({
 		{csvHeader: 'DTC Member Number', as:"dtcMemberId"},
 		{csvHeader: 'Short Name', as:"shortName"},
 		{csvHeader: 'Full Name', as:"name"},
-		{csvHeader: 'Transfer Agent', as:"transferAgent"},
-		{csvHeader: 'Online Purchase?', as:"onlinePurchase"},
+		{csvHeader: 'Serviced Stocks URL', as:"stocksUrl"},
 		//{csvHeader: 'WixDynamicContentId', jsonKey:""},
 		//{csvHeader: 'Address', jsonKey:""},
-		//{csvHeader: 'Serviced Stocks URL', jsonKey:""}
 		],
 	filter: row => row.dtcMemberId && row.name,
-	//projections:[],
+	projections:[
+		({stocksUrl}) => ({domain: (stocksUrl.match(/https?:\/\/([^\/:#?]+)/)||[])[1]})
+		],
 	indexBy:"dtcMemberId",
 	outputPath: "/react-app/dist/transfer-agents.json"
 	})
@@ -48,9 +48,9 @@ async function main({
 		for(let column of inputColumns){
 			obj[column.as] = row[column.csvHeader]
 			}
-		// for(let projection of projections){
-		// 	Object.assign(obj, projection(obj))
-		// 	}
+		for(let projection of projections){
+			Object.assign(obj, projection(obj))
+			}
 		return obj
 		})
 	const filteredObjects = jsonObjects.filter(filter)

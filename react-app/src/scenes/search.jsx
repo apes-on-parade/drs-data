@@ -4,6 +4,7 @@ import useAsyncEffect from "@n1ru4l/use-async-effect"
 
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import Divider from '@mui/material/Divider'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import Card from '@mui/material/Card';
@@ -17,6 +18,7 @@ const styleMaxTwoLines = {
 	overflow: "hidden",
 	textOverflow: "ellipsis"
 	}
+const cardsPerPage=12
 
 const SearchScene = (props) => {
 	//const {} = props
@@ -24,27 +26,39 @@ const SearchScene = (props) => {
 	// Core state
 	const [queryText, setQueryText] = useState("")
 	const [issuers, setIssuers] = useState()
+	const [brokers, setBrokers] = useState()
 	const [transferAgents, setTransferAgents] = useState()
+	const [issuersPaging, setIssuersPaging] = useState({page:0})
+	const [brokersPaging, setBrokersPaging] = useState({page:0})
 
 	// Core state TODO
 	// const [view, setView] = useState(TABLE|GRID)
-	// const [expandIssuers]
-	// const [expandTransferAgents]
-	// const [expandBrokers]
 
 	// Derived state
 	const [debouncedQueryText] = useDebounce(queryText,250)
 	const [filteredIssuerIds, setFilteredIssuerIds] = useState([])
+	const [filteredBrokerIds, setFilteredBrokerIds] = useState([])
 	const [filteredTransferAgentIds, setFilteredTransferAgentIds] = useState([])
+	const [visibleIssuerIds, setVisibleIssuerIds] = useState([])
+	const [visibleBrokerIds, setVisibleBrokerIds] = useState([])
 
 	// Effects
+	useEffect(load,[])
 	useAsyncEffect(loadIssuers,[])
+	useAsyncEffect(loadBrokers,[])
+	useAsyncEffect(loadTransferAgents,[])
+
 	useEffect(filterIssuers,[debouncedQueryText,issuers])
+	useEffect(filterBrokers,[debouncedQueryText,brokers])
 	useEffect(filterTransferAgents,[debouncedQueryText,transferAgents])
+	useEffect(reflectStateToUrl, [debouncedQueryText])
+
+	useEffect(paginateIssuers,[filteredIssuerIds, issuersPaging])
+	useEffect(paginateBrokers,[filteredBrokerIds, brokersPaging])
 
 	return (
 		<Stack direction="column" spacing={4} className="project-page">
-			<Typography> We have compiled reference data on the top US issuers, transfer agents, and brokers.</Typography>
+			<Typography style={{textAlign:"center"}}> We have compiled reference data on the top US issuers, transfer agents, and brokers.</Typography>
 			<TextField
 				id='query-input-field'
 				label='Query'
@@ -53,27 +67,70 @@ const SearchScene = (props) => {
 				value={queryText}
 				onChange={changeQueryText}
 				></TextField>
+
 			<Typography variant="h3">Issuers</Typography>
 			{ !issuers
+				? <Typography>Loading...</Typography>
+				: <Stack direction="column" spacing={4}>
+					<Stack direction="row"
+						justifyContent="flex-start"
+						alignItems="flex-start"
+						spacing={0}
+						sx={{ flexWrap: 'wrap', gap: 1 }}
+						>
+						{visibleIssuerIds.map(iid=>{
+							const issuer = issuers[iid]
+							return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={issuer.id}>
+								<CardContent>
+									<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+										{issuer.ticker} ({issuer.exchange})
+										</Typography>
+									<Typography variant="h5" component="div" sx={styleMaxTwoLines}>
+										{issuer.name}
+										</Typography>
+									<Typography variant="body2">
+										{issuer.transferAgent}
+										</Typography>
+									</CardContent>
+								<CardActions>
+									<Button size="small">More details</Button>
+									</CardActions>
+								</Card>
+							})}
+						</Stack>
+						{issuersPaging.pages>1 &&
+							<Stack direction="row"
+								alignItems="center"
+								justifyContent="center"
+								divider={<Divider orientation="vertical" flexItem />}
+								>
+								<Button onClick={decrementIssuersPage} disabled={issuersPaging.page<=0}>◀</Button>
+								<Typography sx={{marginLeft:3, marginRight:3}}>Page {issuersPaging.page+1} of {issuersPaging.pages}</Typography>
+								<Button onClick={incrementIssuersPage} disabled={issuersPaging.page>=issuersPaging.pages-1} >▶</Button>
+							</Stack>
+						}
+					</Stack>
+				}
+
+			<Typography variant="h3">Transfer Agents</Typography>
+			{ !transferAgents
 				? <Typography>Loading...</Typography>
 				: <Stack direction="row"
 					justifyContent="flex-start"
 					alignItems="flex-start"
-					spacing={0}
+					spacing={1}
 					sx={{ flexWrap: 'wrap', gap: 1 }}
 					>
-					{filteredIssuerIds.map(iid=>{
-						const issuer = issuers[iid]
-						return <Card sx={{ minWidth: 275, marginLeft: 2, marginRight: 2 }} key={issuer["#"]}>
+					{filteredTransferAgentIds.map(taid=>{
+						const transferAgent = transferAgents[taid]
+						return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={transferAgent.dtcMemberId}>
 							<CardContent>
-								<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-									{issuer["Ticker"]}
-									</Typography>
 								<Typography variant="h5" component="div" sx={styleMaxTwoLines}>
-									{issuer.Company}
+									{/* <img src={`https://logo.clearbit.com/${transferAgent.domain}?s=48`} style={{display:"inline-block"}}/> */}
+									{transferAgent.shortName || transferAgent.name}
 									</Typography>
 								<Typography variant="body2">
-									{issuer["Transfer Agent"]}
+									{transferAgent.name}
 									</Typography>
 								</CardContent>
 							<CardActions>
@@ -83,65 +140,169 @@ const SearchScene = (props) => {
 						})}
 					</Stack>
 				}
-			<Typography variant="h3">Transfer Agents</Typography>
-			{ !transferAgents
-				? <Typography>Loading...</Typography>
-				: <Stack direction="row" justifyContent="flex-end" alignItems="center" spacing={4}>
 
+			<Typography variant="h3">Brokers</Typography>
+			{ !brokers
+				? <Typography>Loading...</Typography>
+				: <Stack direction="column" spacing={4}>
+					<Stack direction="row"
+						justifyContent="flex-start"
+						alignItems="flex-start"
+						spacing={0}
+						sx={{ flexWrap: 'wrap', gap: 1 }}
+						>
+						{visibleBrokerIds.map(bid=>{
+							const broker = brokers[bid]
+							return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={broker.name}>
+								<CardContent>
+									<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+										{broker.countryCode}
+										</Typography>
+									<Typography variant="h5" component="div" sx={styleMaxTwoLines}>
+										{broker.name}
+										</Typography>
+									{/* TODO: <Stack direction="row" justifyContent="center">
+										<img src={`https://logo.clearbit.com/${broker.domain}?s=48`} style={{display:"inline-block", textAlign:"top"}} />
+										</Stack>*/}
+									</CardContent>
+								<CardActions>
+									<Button size="small">More details</Button>
+									</CardActions>
+								</Card>
+							})}
+						</Stack>
+						{brokersPaging.pages>1 &&
+							<Stack direction="row"
+								alignItems="center"
+								justifyContent="center"
+								divider={<Divider orientation="vertical" flexItem />}
+								>
+								<Button onClick={decrementBrokersPage} disabled={brokersPaging.page<=0}>◀</Button>
+								<Typography sx={{marginLeft:3, marginRight:3}}>Page {brokersPaging.page+1} of {brokersPaging.pages}</Typography>
+								<Button onClick={incrementBrokersPage} disabled={brokersPaging.page>=brokersPaging.pages-1} >▶</Button>
+							</Stack>
+						}
 					</Stack>
 				}
+
 			</Stack>
 		)
 
-	function changeQueryText(event){setQueryText(event.target.value)}
+	function load(){
+		setQueryText(new URLSearchParams(document.location.search).get("q") || '')
+		}
 	function* loadIssuers(onCancel){
-		const rawResponse = yield fetch('issuers.csv',canceller(onCancel))
-		const responseText = yield rawResponse.text()
-		// This is NOT a general purpose CSV parser!!
-		// It works only because I know I specifically encode strings in a JSON compatible notation
-		const lines = responseText.split("\n").filter(Boolean).map(line => line.split("\t"))
-		const cols = lines[0].map(cell=>JSON.parse(cell))
-		const issuerList = lines.slice(1).map(row =>
-			row.reduce((obj,x,i)=>
-				({...obj, [cols[i]]:JSON.parse(x) })
-				,{}))
-		const issuers = issuerList.reduce(indexBy("#"),{})
+		const rawResponse = yield fetch('issuers.json',canceller(onCancel))
+		const issuers = yield rawResponse.json()
 		setIssuers(issuers)
 		}
+	function* loadBrokers(onCancel){
+		const rawResponse = yield fetch('brokers.json',canceller(onCancel))
+		const brokers = yield rawResponse.json()
+		setBrokers(brokers)
+		}
+	function* loadTransferAgents(onCancel){
+		const rawResponse = yield fetch('transfer-agents.json',canceller(onCancel))
+		const transferAgents = yield rawResponse.json()
+		setTransferAgents(transferAgents)
+		}
+
+	function changeQueryText(event){setQueryText(event.target.value)}
+	function reflectStateToUrl(){
+		history.replaceState(null, "", `#q=${encodeURIComponent(queryText)}`)
+		}
+
 	function filterIssuers(){
 		if(!issuers){
 			return
 			}
 		const query = debouncedQueryText.trim().toLowerCase()
-		if(query === ""){
-			setFilteredIssuerIds(Object.keys(issuers))
+		const filteredIssuerIds =
+			query === ""
+			? Object.keys(issuers)
+			: Object.values(issuers)
+			 	.filter(i =>
+					i.name.toLowerCase().includes(query)
+					|| i.ticker.toLowerCase().includes(query)
+					)
+				.map(i => i.id)
+		setFilteredIssuerIds(filteredIssuerIds)
+		const pages = Math.ceil(filteredIssuerIds.length/cardsPerPage)
+		setIssuersPaging({page:0, pages})
+		}
+
+	function filterBrokers(){
+		if(!brokers){
 			return
 			}
-		const filteredIssuerIds =
-			Object.values(issuers)
-		 	.filter(i =>
-				i["Company"].toLowerCase().indexOf(query)!==-1
-				|| i["Ticker"].toLowerCase().indexOf(query)!==-1
-				)
-			.map(i => i["#"])
-		setFilteredIssuerIds(filteredIssuerIds)
+		const query = debouncedQueryText.trim().toLowerCase()
+		const filteredBrokerIds =
+			query === ""
+			? Object.keys(brokers)
+			: Object.values(brokers)
+			 	.filter(b =>
+					b.name.toLowerCase().includes(query)
+					)
+				.map(b => b.name)
+		setFilteredBrokerIds(filteredBrokerIds)
+		const pages = Math.ceil(filteredBrokerIds.length/cardsPerPage)
+		setBrokersPaging({page:0, pages})
 		}
-	async function loadTransferAgents(){} //TODO
 	function filterTransferAgents(){
 		if(!transferAgents){
 			return
 			}
 		const query = debouncedQueryText.trim().toLowerCase()
-		if(query === ""){
-			setFilteredTransferAgentIds(Object.keys(transferAgents))
-			return
+		const filteredTransferAgentIds =
+			query === ""
+			? Object.keys(transferAgents)
+			: Object.values(transferAgents)
+				.filter(ta =>
+					ta.name.toLowerCase().includes(query)
+					|| ta.shortName.toLowerCase().includes(query)
+					)
+				.map(i => i.dtcMemberId)
+		setFilteredTransferAgentIds(filteredTransferAgentIds)
+		}
+
+	function paginateIssuers(){
+		const visibleIssuerIds = filteredIssuerIds.slice(
+			issuersPaging.page*cardsPerPage,
+			(issuersPaging.page+1)*cardsPerPage
+			)
+		setVisibleIssuerIds(visibleIssuerIds)
+		}
+	function incrementIssuersPage(){
+		const {page, pages} = issuersPaging
+		if(page<pages-1){
+			setIssuersPaging({page:page+1, pages})
 			}
-		// TODO once we know the columns in this dataset
-		// const filteredTransferAgentIds =
-		// 	Object.values(transferAgents)
-		// 	.filter(i => true) //TODO
-		// 	.map(i => i["#"]) //TODO
-		// setFilteredTransferAgentIds(filteredTransferAgentIds)
+		}
+	function decrementIssuersPage(){
+		const {page, pages} = issuersPaging
+		if(page>0){
+			setIssuersPaging({page:page-1, pages})
+			}
+		}
+
+	function paginateBrokers(){
+		const visibleBrokerIds = filteredBrokerIds.slice(
+			brokersPaging.page*cardsPerPage,
+			(brokersPaging.page+1)*cardsPerPage
+			)
+		setVisibleBrokerIds(visibleBrokerIds)
+		}
+	function incrementBrokersPage(){
+		const {page, pages} = brokersPaging
+		if(page<pages-1){
+			setBrokersPaging({page:page+1, pages})
+			}
+		}
+	function decrementBrokersPage(){
+		const {page, pages} = brokersPaging
+		if(page>0){
+			setBrokersPaging({page:page-1, pages})
+			}
 		}
 	}
 

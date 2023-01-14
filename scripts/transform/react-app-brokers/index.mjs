@@ -20,7 +20,7 @@ main({
 		],
 	filter: row => row.name && row.website,
 	projections:[
-		({website}) => ({domain: (website.match(/https?:\/\/([^\/:#?])+/)||[])[0]})
+		({website}) => ({domain: (website.match(/https?:\/\/([^\/:#?]+)/)||[])[1]})
 		],
 	indexBy:"name",
 	outputPath: "/react-app/dist/brokers.json"
