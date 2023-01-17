@@ -23,7 +23,7 @@ main({
 		({website}) => ({domain: (website.match(/https?:\/\/([^\/:#?]+)/)||[])[1]})
 		],
 	indexBy:"name",
-	outputPath: "/react-app/dist/brokers.json"
+	outputPath: "/react-app/dev-data/brokers.json"
 	})
 
 async function main({

@@ -1,4 +1,6 @@
 tmp
+dev-data
+
 # Don't accidentally check in bulky data
 *.csv
 *.tsv

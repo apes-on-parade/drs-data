@@ -19,7 +19,7 @@ main({
 		({stocksUrl}) => ({domain: (stocksUrl.match(/https?:\/\/([^\/:#?]+)/)||[])[1]})
 		],
 	indexBy:"dtcMemberId",
-	outputPath: "/react-app/dist/transfer-agents.json"
+	outputPath: "/react-app/dev-data/transfer-agents.json"
 	})
 
 async function main({

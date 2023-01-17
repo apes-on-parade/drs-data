@@ -1,9 +1,9 @@
 #! /usr/bin/env node
 
-import {URL} from 'url';
+import { URL } from 'url';
 import {readFile, writeFile} from "node:fs/promises"
-import {parse} from 'csv-parse/sync'
-//import {createHash} from 'node:crypto'
+import { parse } from 'csv-parse/sync'
+import { createHash } = from 'node:crypto'
 
 main({
 	inputPath: "/scripts/extract/issuers-gorillionaire/output.csv",
@@ -20,18 +20,16 @@ main({
 		//{csvHeader: "% of Shares DRS'd", jsonKey:""},
 		//{csvHeader: 'CUSIP', jsonKey:""}
 		],
-	filter: row => row.exchange && row.ticker && row.name,
 	projections:[
-		({exchange,ticker}) => ({id: (exchange+':'+ticker).toUpperCase()})
+		({exchange,ticker}) => ({id: hash(exchange+'-'+ticker).slice(0,12)})
 		],
-	indexBy:"id",
-	outputPath: "/react-app/dist/issuers.json"
+	indexBy:"",
+	outputPath: "/react-app/dev-data/transfer-agents.json"
 	})
 
 async function main({
 	inputPath,
 	inputColumns,
-	filter,
 	projections,
 	indexBy,
 	outputPath
@@ -49,23 +47,17 @@ async function main({
 			throw new Error(`Could not find expected column '${column.csvHeader}'`)
 			}
 		}
-	const jsonObjects = csvData.map(row => {
-		let obj = {}
+	const jsonObjects = csvData.slice(1).map(row => {
+		let obj
 		for(let column of inputColumns){
-			obj[column.as] = row[column.csvHeader]
+			obj[as] = row[csvHeader]
 			}
-		for(let projection of projections){
+		for(projection of projections){
 			Object.assign(obj, projection(obj))
 			}
 		return obj
 		})
-	const filteredObjects = jsonObjects.filter(filter)
-	const countObjectsFiltered = jsonObjects.length - filteredObjects.length
-	if(countObjectsFiltered > 0){
-		console.warn(`${countObjectsFiltered} objects were filtered out by the requirement ${filter.toString().slice(0,80)}...`)
-		}
-	const indexedObject = filteredObjects
-		.reduce(indexByKey(indexBy),{})
+	const indexedObject = jsonObjects.reduce(indexByKey(indexBy),{})
 	await writeFile(
 		new URL(`../../..${outputPath}`,import.meta.url),
 		JSON.stringify(indexedObject)
@@ -87,4 +79,4 @@ function indexByKey(key){
 		return {...accum, [x[key]]:x}
 		}
 	}
-// function hash(str){ const h = createHash('sha256').update(str); return h.digest('hex') }
+function hash(str){ const h = createHash('sha256').update(str); return h.digest('hex') }

@@ -6,7 +6,8 @@
 	"scripts": {
 		"start": "webpack-dev-server --config webpack-dev.config.js",
 		"build": "webpack --config webpack-prod.config.js",
-		"test": "echo \"Error: no test specified\" && exit 1"
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"deploy": "rm ../docs/* && npm run build && cp dev-data/* ../docs/ && cp dist/* ../docs/ && cp ../docs/index.html ../docs/404.html && git status"
 	},
 	"repository": {
 		"type": "git",
@@ -35,6 +36,7 @@
 		"@n1ru4l/use-async-effect": "^1.4.0",
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
+		"react-router-dom": "^6.6.2",
 		"use-debounce": "^9.0.2"
 	},
 	"overrides": {
