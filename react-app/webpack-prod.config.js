@@ -81,7 +81,7 @@ module.exports = {
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: path.join(__dirname, 'src/index.html'),
-			//favicon: path.resolve(__dirname, 'public', 'favicon.ico'),
+			publicPath: "/drs-data/", //For github pages
 			minify: {
 				removeComments: true,
 				collapseWhitespace: true,
