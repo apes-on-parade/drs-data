@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react'
+import {useParams} from 'react-router-dom'
 import {useDebounce} from 'use-debounce'
 import useAsyncEffect from "@n1ru4l/use-async-effect"
 
@@ -16,12 +17,16 @@ const styleMaxTwoLines = {
 	boxOrient: "vertical",
 	lineClamp: 2,
 	overflow: "hidden",
-	textOverflow: "ellipsis"
+	textOverflow: "ellipsis",
+	fontSize: "16pt",
+	flexGrow: 1
 	}
 const cardsPerPage=12
 
 const SearchScene = (props) => {
 	//const {} = props
+
+	const {locale='en'} = useParams('locale')
 
 	// Core state
 	const [queryText, setQueryText] = useState("")
@@ -41,9 +46,11 @@ const SearchScene = (props) => {
 	const [filteredTransferAgentIds, setFilteredTransferAgentIds] = useState([])
 	const [visibleIssuerIds, setVisibleIssuerIds] = useState([])
 	const [visibleBrokerIds, setVisibleBrokerIds] = useState([])
+	const [l,setLocalization] = useState(()=>()=>"...")
 
 	// Effects
 	useEffect(load,[])
+	useAsyncEffect(loadLocalization,[locale])
 	useAsyncEffect(loadIssuers,[])
 	useAsyncEffect(loadBrokers,[])
 	useAsyncEffect(loadTransferAgents,[])
@@ -56,21 +63,22 @@ const SearchScene = (props) => {
 	useEffect(paginateIssuers,[filteredIssuerIds, issuersPaging])
 	useEffect(paginateBrokers,[filteredBrokerIds, brokersPaging])
 
+
 	return (
 		<Stack direction="column" spacing={4} className="project-page">
-			<Typography style={{textAlign:"center"}}> We have compiled reference data on the top US issuers, transfer agents, and brokers.</Typography>
+			<Typography style={{textAlign:"center"}}> {l`We have compiled reference data on the top US issuers, transfer agents, and brokers.`}</Typography>
 			<TextField
 				id='query-input-field'
-				label='Query'
-				placeholder='Search Issuers, Transfer Agents, and Brokers'
+				label={l`Query`}
+				placeholder={l`Search Issuers, Transfer Agents, and Brokers`}
 				style={{width:"100%", minWidth:"20em"}}
 				value={queryText}
 				onChange={changeQueryText}
 				></TextField>
 
-			<Typography variant="h3">Issuers</Typography>
+			<Typography variant="h3">{l`Issuers`}</Typography>
 			{ !issuers
-				? <Typography>Loading...</Typography>
+				? <Typography>{l`Loading...`}</Typography>
 				: <Stack direction="column" spacing={4}>
 					<Stack direction="row"
 						justifyContent="flex-start"
@@ -85,15 +93,18 @@ const SearchScene = (props) => {
 									<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
 										{issuer.ticker} ({issuer.exchange})
 										</Typography>
-									<Typography variant="h5" component="div" sx={styleMaxTwoLines}>
-										{issuer.name}
-										</Typography>
+									<Stack direction="row" alignItems="center" spacing={1}>
+										{/*<Logo domain={issuer.domain} />*/}
+										<Typography component="div" style={styleMaxTwoLines}>
+											{issuer.name}
+											</Typography>
+										</Stack>
 									<Typography variant="body2">
 										{issuer.transferAgent}
 										</Typography>
 									</CardContent>
 								<CardActions>
-									<Button size="small">More details</Button>
+									<Button size="small">{l`More details`}</Button>
 									</CardActions>
 								</Card>
 							})}
@@ -105,45 +116,47 @@ const SearchScene = (props) => {
 								divider={<Divider orientation="vertical" flexItem />}
 								>
 								<Button onClick={decrementIssuersPage} disabled={issuersPaging.page<=0}>◀</Button>
-								<Typography sx={{marginLeft:3, marginRight:3}}>Page {issuersPaging.page+1} of {issuersPaging.pages}</Typography>
+								<Typography sx={{marginLeft:3, marginRight:3}}>{l`Page ${issuersPaging.page+1} of ${issuersPaging.pages}`}</Typography>
 								<Button onClick={incrementIssuersPage} disabled={issuersPaging.page>=issuersPaging.pages-1} >▶</Button>
 							</Stack>
 						}
 					</Stack>
 				}
 
-			<Typography variant="h3">Transfer Agents</Typography>
+			<Typography variant="h3">{l`Transfer Agents`}</Typography>
 			{ !transferAgents
-				? <Typography>Loading...</Typography>
+				? <Typography>{l`Loading...`}</Typography>
 				: <Stack direction="row"
 					justifyContent="flex-start"
 					alignItems="flex-start"
-					spacing={1}
+					spacing={0}
 					sx={{ flexWrap: 'wrap', gap: 1 }}
 					>
 					{filteredTransferAgentIds.map(taid=>{
 						const transferAgent = transferAgents[taid]
 						return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={transferAgent.dtcMemberId}>
 							<CardContent>
-								<Typography variant="h5" component="div" sx={styleMaxTwoLines}>
-									{/* <img src={`https://logo.clearbit.com/${transferAgent.domain}?s=48`} style={{display:"inline-block"}}/> */}
-									{transferAgent.shortName || transferAgent.name}
-									</Typography>
+								<Stack direction="row" alignItems="center" spacing={1}>
+									<Logo domain={transferAgent.domain} />
+									<Typography component="div" style={styleMaxTwoLines}>
+										{transferAgent.shortName || transferAgent.name}
+										</Typography>
+									</Stack>
 								<Typography variant="body2">
 									{transferAgent.name}
 									</Typography>
 								</CardContent>
 							<CardActions>
-								<Button size="small">More details</Button>
+								<Button size="small">{l`More details`}</Button>
 								</CardActions>
 							</Card>
 						})}
 					</Stack>
 				}
 
-			<Typography variant="h3">Brokers</Typography>
+			<Typography variant="h3">{l`Brokers`}</Typography>
 			{ !brokers
-				? <Typography>Loading...</Typography>
+				? <Typography>{l`Loading...`}</Typography>
 				: <Stack direction="column" spacing={4}>
 					<Stack direction="row"
 						justifyContent="flex-start"
@@ -158,15 +171,15 @@ const SearchScene = (props) => {
 									<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
 										{broker.countryCode}
 										</Typography>
-									<Typography variant="h5" component="div" sx={styleMaxTwoLines}>
-										{broker.name}
-										</Typography>
-									{/* TODO: <Stack direction="row" justifyContent="center">
-										<img src={`https://logo.clearbit.com/${broker.domain}?s=48`} style={{display:"inline-block", textAlign:"top"}} />
-										</Stack>*/}
+									<Stack direction="row" alignItems="center" spacing={1}>
+										<Logo domain={broker.domain} />
+										<Typography component="div" style={styleMaxTwoLines}>
+											{broker.name}
+											</Typography>
+										</Stack>
 									</CardContent>
 								<CardActions>
-									<Button size="small">More details</Button>
+									<Button size="small">{l`More details`}</Button>
 									</CardActions>
 								</Card>
 							})}
@@ -178,31 +191,43 @@ const SearchScene = (props) => {
 								divider={<Divider orientation="vertical" flexItem />}
 								>
 								<Button onClick={decrementBrokersPage} disabled={brokersPaging.page<=0}>◀</Button>
-								<Typography sx={{marginLeft:3, marginRight:3}}>Page {brokersPaging.page+1} of {brokersPaging.pages}</Typography>
+								<Typography sx={{marginLeft:3, marginRight:3}}>{l`Page ${brokersPaging.page+1} of ${brokersPaging.pages}`}</Typography>
 								<Button onClick={incrementBrokersPage} disabled={brokersPaging.page>=brokersPaging.pages-1} >▶</Button>
 							</Stack>
 						}
 					</Stack>
 				}
 
+			<Typography style={{textAlign:"center"}}><a href="https://clearbit.com">{l`Logos provided by Clearbit`}</a></Typography>
 			</Stack>
 		)
 
 	function load(){
 		setQueryText(new URLSearchParams(document.location.search).get("q") || '')
 		}
+	function* loadLocalization(onCancel){
+		let localization
+		try{
+			localization = (yield import(`./locale-${locale}.js`)).default
+			}
+		catch(e){
+			console.error(`Failed to load requested locale ${locale}`)
+			localization = (yield import(`./locale-en.js`)).default
+			}
+		setLocalization(()=>localization)
+		}
 	function* loadIssuers(onCancel){
-		const rawResponse = yield fetch('issuers.json',canceller(onCancel))
+		const rawResponse = yield fetch('/issuers.json',canceller(onCancel))
 		const issuers = yield rawResponse.json()
 		setIssuers(issuers)
 		}
 	function* loadBrokers(onCancel){
-		const rawResponse = yield fetch('brokers.json',canceller(onCancel))
+		const rawResponse = yield fetch('/brokers.json',canceller(onCancel))
 		const brokers = yield rawResponse.json()
 		setBrokers(brokers)
 		}
 	function* loadTransferAgents(onCancel){
-		const rawResponse = yield fetch('transfer-agents.json',canceller(onCancel))
+		const rawResponse = yield fetch('/transfer-agents.json',canceller(onCancel))
 		const transferAgents = yield rawResponse.json()
 		setTransferAgents(transferAgents)
 		}
@@ -315,5 +340,17 @@ function canceller(onCancel){
 function indexBy(property){
 	return (obj,x,i) => ({...obj,[x[property]]:x})
 	}
+
+function Logo({domain}){
+	const [didError, setDidError] = useState(undefined)
+
+	return <img
+		style={{display: didError ? 'none' : 'inline-block', boxShadow: '1px 1px 4px 0px rgba(0,0,0,0.33)'}}
+		onError={onError}
+		src={`https://logo.clearbit.com/${domain}?s=48`}
+		/>
+
+	function onError(){setDidError(true)}
+}
 
 export default SearchScene
