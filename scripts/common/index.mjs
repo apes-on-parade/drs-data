@@ -1,6 +1,6 @@
 import {URL} from 'url'
 import {stringify} from 'csv-stringify/sync'
-import {writeFile} from "node:fs/promises"
+import {readFile, writeFile} from "node:fs/promises"
 
 export {
 	csvWriter,
@@ -18,7 +18,7 @@ function csvWriter(folder){
 
 async function readOrThrow(file,errorMessage){
 	try{
-		return await readFile(new URL(file,import.meta.url))
+		return await readFile(new URL("../.."+file,import.meta.url))
 		}
 	catch(e){
 		console.error(e)

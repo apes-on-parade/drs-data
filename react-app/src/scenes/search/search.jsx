@@ -26,7 +26,10 @@ const cardsPerPage=12
 const SearchScene = (props) => {
 	//const {} = props
 
+	//Localization
 	const {locale='en'} = useParams('locale')
+	const [l,setLocalization] = useState(()=>()=>"...")
+	useAsyncEffect(loadLocalization,[locale])
 
 	// Core state
 	const [queryText, setQueryText] = useState("")
@@ -46,11 +49,9 @@ const SearchScene = (props) => {
 	const [filteredTransferAgentIds, setFilteredTransferAgentIds] = useState([])
 	const [visibleIssuerIds, setVisibleIssuerIds] = useState([])
 	const [visibleBrokerIds, setVisibleBrokerIds] = useState([])
-	const [l,setLocalization] = useState(()=>()=>"...")
 
 	// Effects
 	useEffect(load,[])
-	useAsyncEffect(loadLocalization,[locale])
 	useAsyncEffect(loadIssuers,[])
 	useAsyncEffect(loadBrokers,[])
 	useAsyncEffect(loadTransferAgents,[])

@@ -1,54 +1,15 @@
-#! /usr/bin/env node
-
 import {URL} from 'url';
 import {writeFile, mkdir} from "node:fs/promises"
 import {parse} from 'csv-parse/sync'
-//import {createHash} from 'node:crypto'
-import {readOrThrow} from '../../common/index.mjs'
+import {readOrThrow} from "./index.mjs"
 
-main({
-	inputPath: "/manual-data/brokers.csv",
-	inputColumns:[
-		// Name of Broker,Country,Language Spoken,Type,Direct DRS available?,CS # Required?,Letter of instruction,Notes,Expected Fee,Duration,Website,Twitter,English URL,Last Update,Translation Priority
-		{csvHeader: 'Name of Broker', as:"name"},
-		{csvHeader: 'Country', as:"countryCode"},
-		{csvHeader: 'Website', as:"website"},
-		{csvHeader: 'Direct DRS available?', as:"hasDrs"},
-		{csvHeader: 'CS # Required?', as:"destinationAccountRequired"},
-		//{csvHeader: 'Investor Relations', jsonKey:""},
-		//{csvHeader: 'IR Phone #', jsonKey:""},
-		//{csvHeader: 'DRS', jsonKey:""},
-		//{csvHeader: 'Outstanding shares', jsonKey:""},
-		//{csvHeader: "% of Shares DRS'd", jsonKey:""},
-		//{csvHeader: 'CUSIP', jsonKey:""}
-		],
-	filter: row => row.name && row.website,
-	projections:[
-		({name}) => ({id: name.toLowerCase().replace(/\W+/g,"-")}),
-		({hasDrs}) => ({hasDrs: hasDrs==="Yes"?true : hasDrs==="No"?false : undefined}),
-		({destinationAccountRequired}) => ({destinationAccountRequired: destinationAccountRequired==="Yes"?true : destinationAccountRequired==="No"?false : undefined}),
-		({website}) => ({domain: (website.match(/https?:\/\/([^\/:#?]+)/)||[])[1]}),
-		],
-	id:"id",
-	outputs:{
-		"index":{
-			type:"index",
-			path: "/react-app/dev-data/brokers.json",
-			fields:["id","name","countryCode","domain"]
-			},
-		"drs-request":{
-			type:"detail",
-			path: ({id})=>`/react-app/dev-data/brokers/drs-request/${id}.json`,
-			fields:["id","name","countryCode","domain","hasDrs","destinationAccountRequired"]
-			}
-		}
-	})
+export default reactAppJsonBuilder
 
-async function main({
+async function reactAppJsonBuilder({
 	inputPath,
 	inputColumns,
-	filter,
 	projections,
+	filter,
 	id,
 	outputs
 	}){
@@ -90,22 +51,22 @@ async function main({
 				const indexedObject = outputObjects
 					.reduce(indexByKey(id),{})
 				await mkdir(
-					new URL("../../.."+output.path.replace(filenameRegex,""), import.meta.url),
+					new URL("../.."+output.path.replace(filenameRegex,""), import.meta.url),
 					{recursive: true}
 					)
 				await writeFile(
-					new URL("../../.."+output.path, import.meta.url),
+					new URL("../.."+output.path, import.meta.url),
 					JSON.stringify(indexedObject)
 					)
 				break
 			case "detail":
 				await mkdir(
-					new URL("../../.."+output.path({id:'foo'}).replace(filenameRegex,""),import.meta.url),
+					new URL("../.."+output.path({id:'foo'}).replace(filenameRegex,""),import.meta.url),
 					{recursive: true}
 					)
 				for(let obj of outputObjects){
 					await writeFile(
-						new URL("../../.."+output.path(obj),import.meta.url),
+						new URL("../.."+output.path(obj),import.meta.url),
 						JSON.stringify(obj)
 						)
 					}
