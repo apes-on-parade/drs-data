@@ -166,7 +166,7 @@ const SearchScene = (props) => {
 						>
 						{visibleBrokerIds.map(bid=>{
 							const broker = brokers[bid]
-							return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={broker.name}>
+							return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={broker.id}>
 								<CardContent>
 									<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
 										{broker.countryCode}
@@ -268,7 +268,7 @@ const SearchScene = (props) => {
 			 	.filter(b =>
 					b.name.toLowerCase().includes(query)
 					)
-				.map(b => b.name)
+				.map(b => b.id)
 		setFilteredBrokerIds(filteredBrokerIds)
 		const pages = Math.ceil(filteredBrokerIds.length/cardsPerPage)
 		setBrokersPaging({page:0, pages})

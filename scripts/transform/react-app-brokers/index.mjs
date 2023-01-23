@@ -1,16 +1,20 @@
 #! /usr/bin/env node
 
 import {URL} from 'url';
-import {readFile, writeFile} from "node:fs/promises"
+import {readFile, writeFile, mkdir} from "node:fs/promises"
 import {parse} from 'csv-parse/sync'
 //import {createHash} from 'node:crypto'
+import {readOrThrow} from '../../common/index.mjs'
 
 main({
 	inputPath: "/manual-data/brokers.csv",
 	inputColumns:[
+		// Name of Broker,Country,Language Spoken,Type,Direct DRS available?,CS # Required?,Letter of instruction,Notes,Expected Fee,Duration,Website,Twitter,English URL,Last Update,Translation Priority
 		{csvHeader: 'Name of Broker', as:"name"},
 		{csvHeader: 'Country', as:"countryCode"},
-		{csvHeader: 'Website', as:"website"}
+		{csvHeader: 'Website', as:"website"},
+		{csvHeader: 'Direct DRS available?', as:"hasDrs"},
+		{csvHeader: 'CS # Required?', as:"destinationAccountRequired"},
 		//{csvHeader: 'Investor Relations', jsonKey:""},
 		//{csvHeader: 'IR Phone #', jsonKey:""},
 		//{csvHeader: 'DRS', jsonKey:""},
@@ -20,10 +24,24 @@ main({
 		],
 	filter: row => row.name && row.website,
 	projections:[
-		({website}) => ({domain: (website.match(/https?:\/\/([^\/:#?]+)/)||[])[1]})
+		({name}) => ({id: name.toLowerCase().replace(/\W+/g,"-")}),
+		({hasDrs}) => ({hasDrs: hasDrs==="Yes"?true : hasDrs==="No"?false : undefined}),
+		({destinationAccountRequired}) => ({destinationAccountRequired: destinationAccountRequired==="Yes"?true : destinationAccountRequired==="No"?false : undefined}),
+		({website}) => ({domain: (website.match(/https?:\/\/([^\/:#?]+)/)||[])[1]}),
 		],
-	indexBy:"name",
-	outputPath: "/react-app/dev-data/brokers.json"
+	id:"id",
+	ouputs:{
+		"index":{
+			type:"index"
+			path: "../../../react-app/dev-data/brokers.json",
+			fields:["id","name","countryCode","domain"]
+			},
+		"drs-request":{
+			type:"detail",
+			path: ({id})=>`../../../react-app/dev-data/brokers/drs-request/${id}.json`,
+			fields:["id","name","countryCode","domain","hasDrs","destinationAccountRequired"]
+			}
+		}
 	})
 
 async function main({
@@ -31,9 +49,10 @@ async function main({
 	inputColumns,
 	filter,
 	projections,
-	indexBy,
-	outputPath
+	id,
+	ouputs
 	}){
+	const filenameRegex = /[^\/]*\.[^.\/]+$/
 	const csvText = await readOrThrow(
 		`../../..${inputPath}`,
 		`Required file ${inputPath} not found.`
@@ -47,7 +66,7 @@ async function main({
 			throw new Error(`Could not find expected column '${column.csvHeader}'`)
 			}
 		}
-	const jsonObjects = csvData.map(row => {
+	const objects = csvData.map(row => {
 		let obj = {}
 		for(let column of inputColumns){
 			obj[column.as] = row[column.csvHeader]
@@ -57,31 +76,55 @@ async function main({
 			}
 		return obj
 		})
-	const filteredObjects = jsonObjects.filter(filter)
-	const countObjectsFiltered = jsonObjects.length - filteredObjects.length
+	const filteredObjects = objects.filter(filter)
+	const countObjectsFiltered = objects.length - filteredObjects.length
 	if(countObjectsFiltered > 0){
 		console.warn(`${countObjectsFiltered} objects were filtered out by the requirement ${filter.toString().slice(0,80)}...`)
 		}
-	const indexedObject = filteredObjects
-		.reduce(indexByKey(indexBy),{})
-	await writeFile(
-		new URL(`../../..${outputPath}`,import.meta.url),
-		JSON.stringify(indexedObject)
-		)
-	}
 
-async function readOrThrow(file,errorMessage){
-	try{
-		return await readFile(new URL(file,import.meta.url))
-		}
-	catch(e){
-		console.error(e)
-		throw new Error(errorMessage)
-		}
+	for(let output of Object.values(outputs||{})){
+		const outputObjects = filteredObjects
+			.map(select(output.fields))
+		switch(output.type){
+			case "index":
+				const indexedObject = outputObjects
+					.reduce(indexByKey(id),{})
+				await mkdir(
+					new URL(output.path.replace(filenameRegex,""), import.meta.url),
+					{recursive: true}
+					)
+				await writeFile(
+					new URL(output.path, import.meta.url),
+					JSON.stringify(indexedObject)
+					)
+				break
+			case "detail":
+				await mkdir(
+					new URL(output.path({id:'foo'}).replace(filenameRegex,""),import.meta.url),
+					{recursive: true}
+					)
+				for(let obj of outputObjects){
+					await writeFile(
+						new URL(output.path(obj),import.meta.url),
+						JSON.stringify(obj)
+						)
+					}
+				break
+			default: console.error(`Missing/invalid output type`)
+			}
 	}
 
 function indexByKey(key){
 	return function(accum,x,i){
 		return {...accum, [x[key]]:x}
+		}
+	}
+function select(fields){
+	return function(obj){
+		let ret = {}
+		for(let field of fields){
+			ret[field]=obj[field]
+			}
+		return ret
 		}
 	}
