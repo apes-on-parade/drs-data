@@ -81,7 +81,6 @@ module.exports = {
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: path.join(__dirname, 'src/index.html'),
-			publicPath: "/drs-data/", //For github pages
 			minify: {
 				removeComments: true,
 				collapseWhitespace: true,
