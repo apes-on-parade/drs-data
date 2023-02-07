@@ -4,7 +4,7 @@ tmp
 *.tsv
 *.jsonl
 *.ndjson
-
+cache
 
 ### Auto-generated default stuff below
 # Logs
