@@ -12,8 +12,7 @@ module.exports = {
 	mode: 'production',
 	devtool: 'source-map',
 	output: {
-		filename: 'index-[hash:8].js',
-		chunkFilename: '[name]-[hash:8].chunk.js',
+		...base.output,
 		path: path.resolve(__dirname, 'dist'),
 		},
 	module: {
@@ -42,7 +41,7 @@ module.exports = {
 					{
 						loader: 'file-loader',
 						options: {
-							name: '[name]-[hash:8].[ext]',
+							name: '[name]-[contenthash:8].[ext]',
 							outputPath: 'dist',
 							},
 						},
@@ -81,6 +80,7 @@ module.exports = {
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: path.join(__dirname, 'src/index.html'),
+			publicPath: "/",
 			minify: {
 				removeComments: true,
 				collapseWhitespace: true,

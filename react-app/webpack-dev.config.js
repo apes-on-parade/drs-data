@@ -8,11 +8,6 @@ module.exports = {
 	...base,
 	mode: 'development',
 	devtool: 'cheap-module-source-map',
-	output: {
-		filename: 'index.js',
-		chunkFilename: '[name].chunk.js',
-		//path: path.resolve(__dirname, 'tmp/webpack'),
-		},
 	module: {
 		...base.module,
 		rules: [

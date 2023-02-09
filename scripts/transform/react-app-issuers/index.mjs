@@ -35,12 +35,12 @@ reactAppJsonBuilder({
 		"index":{
 			type:"index",
 			path: "/react-app/dev-data/issuers.json",
-			fields:["id","name","countryCode","domain"]
+			fields:["id","name","ticker","exchange"]
 			},
-		"drs-request":{
-			type:"detail",
-			path: ({id})=>`/react-app/dev-data/issuers/drs-request/${id}.json`,
-			fields:["id","name","countryCode","cusip","transferAgentId"]
-			}
+		// "drs-request":{
+		// 	type:"detail",
+		// 	path: ({id})=>`/react-app/dev-data/issuers/drs-request/${id}.json`,
+		// 	fields:["id","name","countryCode","cusip","transferAgentId"]
+		// 	}
 		}
 	})

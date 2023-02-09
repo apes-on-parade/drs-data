@@ -2,6 +2,11 @@ const path = require('path')
 
 module.exports = {
 	entry: './src/index.jsx',
+	output: {
+			filename: 'index-[contenthash:8].js',
+			chunkFilename: '[name]-[contenthash:8].chunk.js',
+			publicPath: '/'
+		},
 	module: {
 		rules: [
 			{

@@ -67,7 +67,7 @@ const SearchScene = (props) => {
 
 	return (
 		<Stack direction="column" spacing={4} className="project-page">
-			<Typography style={{textAlign:"center"}}> {l`We have compiled reference data on the top US issuers, transfer agents, and brokers.`}</Typography>
+			<Typography style={{textAlign:"center"}}> {l`We have compiled reference data on the top US brokers, issuers, and transfer agents.`}</Typography>
 			<TextField
 				id='query-input-field'
 				label={l`Query`}
@@ -77,9 +77,55 @@ const SearchScene = (props) => {
 				onChange={changeQueryText}
 				></TextField>
 
-			<Typography variant="h3">{l`Issuers`}</Typography>
-			{ !issuers
-				? <Typography>{l`Loading...`}</Typography>
+			<Typography variant="h4">{l`Brokers`}</Typography>
+			{
+				!brokers ? <Typography>{l`Loading...`}</Typography>
+				: !filteredBrokerIds.length ? <Typography>{l`No transfer agents match your query.`}</Typography>
+				: <Stack direction="column" spacing={4}>
+					<Stack direction="row"
+						justifyContent="flex-start"
+						alignItems="flex-start"
+						spacing={0}
+						sx={{ flexWrap: 'wrap', gap: 1 }}
+						>
+						{visibleBrokerIds.map(bid=>{
+							const broker = brokers[bid]
+							return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={broker.id}>
+								<CardContent>
+									<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+										{broker.countryCode}
+										</Typography>
+									<Stack direction="row" alignItems="center" spacing={1}>
+										<Logo domain={broker.domain} />
+										<Typography component="div" style={styleMaxTwoLines}>
+											{broker.name}
+											</Typography>
+										</Stack>
+									</CardContent>
+								<CardActions>
+									<Button size="small">{l`More details`}</Button>
+									</CardActions>
+								</Card>
+							})}
+						</Stack>
+						{brokersPaging.pages>1 &&
+							<Stack direction="row"
+								alignItems="center"
+								justifyContent="center"
+								divider={<Divider orientation="vertical" flexItem />}
+								>
+								<Button onClick={decrementBrokersPage} disabled={brokersPaging.page<=0}>◀</Button>
+								<Typography sx={{marginLeft:3, marginRight:3}}>{l`Page ${brokersPaging.page+1} of ${brokersPaging.pages}`}</Typography>
+								<Button onClick={incrementBrokersPage} disabled={brokersPaging.page>=brokersPaging.pages-1} >▶</Button>
+							</Stack>
+						}
+					</Stack>
+				}
+
+			<Typography variant="h4">{l`Issuers`}</Typography>
+			{
+				!issuers ? <Typography>{l`Loading...`}</Typography>
+				: !filteredIssuerIds.length ? <Typography>{l`No issuers match your query. Note that we only publish information for a limited set of issuers.`}</Typography>
 				: <Stack direction="column" spacing={4}>
 					<Stack direction="row"
 						justifyContent="flex-start"
@@ -124,9 +170,10 @@ const SearchScene = (props) => {
 					</Stack>
 				}
 
-			<Typography variant="h3">{l`Transfer Agents`}</Typography>
-			{ !transferAgents
-				? <Typography>{l`Loading...`}</Typography>
+			<Typography variant="h4">{l`Transfer Agents`}</Typography>
+			{
+				!transferAgents ? <Typography>{l`Loading...`}</Typography>
+				: !filteredTransferAgentIds.length ? <Typography>{l`No transfer agents match your query.`}</Typography>
 				: <Stack direction="row"
 					justifyContent="flex-start"
 					alignItems="flex-start"
@@ -152,50 +199,6 @@ const SearchScene = (props) => {
 								</CardActions>
 							</Card>
 						})}
-					</Stack>
-				}
-
-			<Typography variant="h3">{l`Brokers`}</Typography>
-			{ !brokers
-				? <Typography>{l`Loading...`}</Typography>
-				: <Stack direction="column" spacing={4}>
-					<Stack direction="row"
-						justifyContent="flex-start"
-						alignItems="flex-start"
-						spacing={0}
-						sx={{ flexWrap: 'wrap', gap: 1 }}
-						>
-						{visibleBrokerIds.map(bid=>{
-							const broker = brokers[bid]
-							return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={broker.id}>
-								<CardContent>
-									<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-										{broker.countryCode}
-										</Typography>
-									<Stack direction="row" alignItems="center" spacing={1}>
-										<Logo domain={broker.domain} />
-										<Typography component="div" style={styleMaxTwoLines}>
-											{broker.name}
-											</Typography>
-										</Stack>
-									</CardContent>
-								<CardActions>
-									<Button size="small">{l`More details`}</Button>
-									</CardActions>
-								</Card>
-							})}
-						</Stack>
-						{brokersPaging.pages>1 &&
-							<Stack direction="row"
-								alignItems="center"
-								justifyContent="center"
-								divider={<Divider orientation="vertical" flexItem />}
-								>
-								<Button onClick={decrementBrokersPage} disabled={brokersPaging.page<=0}>◀</Button>
-								<Typography sx={{marginLeft:3, marginRight:3}}>{l`Page ${brokersPaging.page+1} of ${brokersPaging.pages}`}</Typography>
-								<Button onClick={incrementBrokersPage} disabled={brokersPaging.page>=brokersPaging.pages-1} >▶</Button>
-							</Stack>
-						}
 					</Stack>
 				}
 
