@@ -1,5 +1,3 @@
-import translator from '../../common/translator'
-
 const translations = {
 	"Query": "Filtro",
 	"We have compiled reference data on the top US brokers, issuers, and transfer agents.":
@@ -28,6 +26,6 @@ const translations = {
 		(...vars)=>`Página ${vars[0]} de ${vars[1]}`
 	}
 
+import translator from '../../common/translator'
 const translate = translator(translations)
-
 export default translate

@@ -3,9 +3,10 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 
 
 //import '@font....css'
-//import './app.css'
+import './app.css'
 
 const SearchScene = lazy(() => import('./scenes/search/search.jsx'))
+const BrokerScene = lazy(() => import('./scenes/broker/broker.jsx'))
 //const DrsRequestTemplateScene = lazy(() => import('./scenes/drs-request-template/drs-request-template.jsx'))
 
 const App = () => {
@@ -31,6 +32,10 @@ const App = () => {
 				path="/:locale/drs-request-template"
 				element={<Suspense fallback={Loading}><DrsRequestTemplateScene /></Suspense>}
 				/>*/}
+			<Route
+				path="/:locale/brokers/:brokerId"
+				element={<Suspense fallback={Loading}><BrokerScene /></Suspense>}
+				/>
 			</Routes>
 		</Router>
 	}

@@ -5,11 +5,13 @@ import useAsyncEffect from "@n1ru4l/use-async-effect"
 
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import Container from '@mui/material/Container'
 import Divider from '@mui/material/Divider'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
+import Link from '@mui/material/Link'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 
 const styleMaxTwoLines = {
@@ -66,7 +68,7 @@ const SearchScene = (props) => {
 
 
 	return (
-		<Stack direction="column" spacing={4} className="project-page">
+		<Container><Stack direction="column" spacing={4} className="page">
 			<Typography style={{textAlign:"center"}}> {l`We have compiled reference data on the top US brokers, issuers, and transfer agents.`}</Typography>
 			<TextField
 				id='query-input-field'
@@ -92,9 +94,9 @@ const SearchScene = (props) => {
 							const broker = brokers[bid]
 							return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={broker.id}>
 								<CardContent>
-									<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+									{/*}<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
 										{broker.countryCode}
-										</Typography>
+										</Typography>*/}
 									<Stack direction="row" alignItems="center" spacing={1}>
 										<Logo domain={broker.domain} />
 										<Typography component="div" style={styleMaxTwoLines}>
@@ -103,7 +105,9 @@ const SearchScene = (props) => {
 										</Stack>
 									</CardContent>
 								<CardActions>
-									<Button size="small">{l`More details`}</Button>
+									<Link href={`/${locale}/brokers/${broker.id}`}>
+										<Button size="small">{l`More details`}</Button>
+										</Link>
 									</CardActions>
 								</Card>
 							})}
@@ -150,9 +154,9 @@ const SearchScene = (props) => {
 										{issuer.transferAgent}
 										</Typography>
 									</CardContent>
-								<CardActions>
+								{/*<CardActions>
 									<Button size="small">{l`More details`}</Button>
-									</CardActions>
+									</CardActions>*/}
 								</Card>
 							})}
 						</Stack>
@@ -182,7 +186,7 @@ const SearchScene = (props) => {
 					>
 					{filteredTransferAgentIds.map(taid=>{
 						const transferAgent = transferAgents[taid]
-						return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={transferAgent.dtcMemberId}>
+						return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={transferAgent.id}>
 							<CardContent>
 								<Stack direction="row" alignItems="center" spacing={1}>
 									<Logo domain={transferAgent.domain} />
@@ -194,16 +198,16 @@ const SearchScene = (props) => {
 									{transferAgent.name}
 									</Typography>
 								</CardContent>
-							<CardActions>
+							{/*<CardActions>
 								<Button size="small">{l`More details`}</Button>
-								</CardActions>
+								</CardActions>*/}
 							</Card>
 						})}
 					</Stack>
 				}
 
 			<Typography style={{textAlign:"center"}}><a href="https://clearbit.com">{l`Logos provided by Clearbit`}</a></Typography>
-			</Stack>
+			</Stack></Container>
 		)
 
 	function load(){
@@ -290,7 +294,7 @@ const SearchScene = (props) => {
 					ta.name.toLowerCase().includes(query)
 					|| ta.shortName.toLowerCase().includes(query)
 					)
-				.map(i => i.dtcMemberId)
+				.map(i => i.id)
 		setFilteredTransferAgentIds(filteredTransferAgentIds)
 		}
 

@@ -71,9 +71,9 @@ const DrsRequestTemplateScene = (props) => {
 					)}
 				/>
 			<hr />
-			{broker && broker.hasDrs===undefined && <Typography>{l`Loading broker details...`}</Typography>}
-			{broker && broker.hasDrs===false && <Typography>{l`Your broker does not handle DRS requests directly. However, there are still a few options you can use to register your shares`}</Typography>}
-			{broker && broker.hasDrs===true && <>
+			{broker && broker.drsAvailable===undefined && <Typography>{l`Loading broker details...`}</Typography>}
+			{broker && broker.drsAvailable===false && <Typography>{l`Your broker does not handle DRS requests directly. However, there are still a few options you can use to register your shares`}</Typography>}
+			{broker && broker.drsAvailable===true && <>
 				<Typography>{l`Good news! Your broker does handle DRS requests!`}</Typography>
 				</>}
 			{selectedIssuers.length>0 &&
@@ -137,7 +137,7 @@ const DrsRequestTemplateScene = (props) => {
 			return
 			}
 		const selectedBroker = brokers[selectedBrokerOption.id]
-		if(selectedBroker.hasDrs !== undefined){
+		if(selectedBroker.drsAvailable !== undefined){
 			return
 			}
 		const rawResponse = yield fetch(`/brokers/drs-request/${selectedBroker.id}.json`,canceller(onCancel))
