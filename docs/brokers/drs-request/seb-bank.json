@@ -1,1 +1,1 @@
-{"id":"seb-bank","name":"SEB Bank","countryCode":"SE","domain":"sebgroup.com","hasDrs":false,"destinationAccountRequired":false}
+{"id":"seb-bank","name":"SEB Bank","domain":"sebgroup.com","languages":"English, Swedish","drsAvailable":false,"drsAccountRequired":false,"drsFee":"$0","drsDuration":"","drsLoi":"English, Swedish","notes":"Through IBKR"}

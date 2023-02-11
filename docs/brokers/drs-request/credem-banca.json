@@ -1,1 +1,1 @@
-{"id":"credem-banca","name":"CREDEM Banca","countryCode":"IT","domain":"www.credem.it","hasDrs":false,"destinationAccountRequired":false}
+{"id":"credem-banca","name":"CREDEM Banca","domain":"www.credem.it","languages":"Italian","drsAvailable":false,"drsAccountRequired":false,"drsFee":"€0","drsDuration":"","drsLoi":"Italian","notes":"Through IBKR"}

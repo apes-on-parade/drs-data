@@ -1,1 +1,1 @@
-{"id":"lhv-bank","name":"LHV Bank","countryCode":"EE","domain":"www.lhv.ee","hasDrs":true,"destinationAccountRequired":true}
+{"id":"lhv-bank","name":"LHV Bank","domain":"www.lhv.ee","languages":"English, Estonian, Russian","drsAvailable":true,"drsAccountRequired":true,"drsFee":"€10","drsDuration":"","drsLoi":"English, Estonian, Russian","notes":""}

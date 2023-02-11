@@ -1,1 +1,1 @@
-{"id":"lynx","name":"LYNX","countryCode":"CZ DE NL SK","domain":"www.lynxbroker.com","hasDrs":true,"destinationAccountRequired":false}
+{"id":"lynx","name":"LYNX","domain":"www.lynxbroker.com","languages":"English, Dutch, French, German, Czech, Polish, Slovakian, Finnish","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$5","drsDuration":"","drsLoi":"English, Dutch, French, German, Czech, Polish, Slovakian, Finnish","notes":"IBKR Like"}

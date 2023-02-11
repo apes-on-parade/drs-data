@@ -1,1 +1,1 @@
-{"id":"questrade","name":"Questrade","countryCode":"CA","domain":"www.questrade.com","hasDrs":true,"destinationAccountRequired":false}
+{"id":"questrade","name":"Questrade","domain":"www.questrade.com","languages":"English, French","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$339","drsDuration":"5-10","drsLoi":"English, French","notes":""}

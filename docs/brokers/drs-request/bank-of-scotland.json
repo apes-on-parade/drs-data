@@ -1,1 +1,1 @@
-{"id":"bank-of-scotland","name":"Bank of Scotland","countryCode":"GB","domain":"www.bankofscotland.co.uk","hasDrs":true,"destinationAccountRequired":false}
+{"id":"bank-of-scotland","name":"Bank of Scotland","domain":"www.bankofscotland.co.uk","languages":"English","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$0","drsDuration":"","drsLoi":"English","notes":""}

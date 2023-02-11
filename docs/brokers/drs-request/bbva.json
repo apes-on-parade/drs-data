@@ -1,1 +1,1 @@
-{"id":"bbva","name":"BBVA","countryCode":"MX","domain":"www.bbva.mx","hasDrs":true,"destinationAccountRequired":false}
+{"id":"bbva","name":"BBVA","domain":"www.bbva.mx","languages":"Spanish","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$0","drsDuration":"5-10","drsLoi":"Spanish","notes":""}

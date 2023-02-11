@@ -1,1 +1,1 @@
-{"id":"sparkasse","name":"Sparkasse","countryCode":"DE","domain":"www.sparkasse.de","hasDrs":true,"destinationAccountRequired":true}
+{"id":"sparkasse","name":"Sparkasse","domain":"www.sparkasse.de","languages":"English, German","drsAvailable":true,"drsAccountRequired":true,"drsFee":"$0","drsDuration":"","drsLoi":"English, German","notes":""}

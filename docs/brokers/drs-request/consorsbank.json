@@ -1,1 +1,1 @@
-{"id":"consorsbank","name":"Consorsbank","countryCode":"DE","domain":"www.consorsbank.de","hasDrs":false,"destinationAccountRequired":false}
+{"id":"consorsbank","name":"Consorsbank","domain":"www.consorsbank.de","languages":"German","drsAvailable":false,"drsAccountRequired":false,"drsFee":"€45","drsDuration":"","drsLoi":"German","notes":"Through IBKR with conversion"}

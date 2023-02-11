@@ -1,1 +1,1 @@
-{"id":"dnb","name":"DNB","countryCode":"NO","domain":"www.dnb.no","hasDrs":true,"destinationAccountRequired":false}
+{"id":"dnb","name":"DNB","domain":"www.dnb.no","languages":"English, Norwegian, Danish, Swedish, German","drsAvailable":true,"drsAccountRequired":false,"drsFee":"NOK2000","drsDuration":"","drsLoi":"English, Norwegian, Danish, Swedish, German","notes":""}

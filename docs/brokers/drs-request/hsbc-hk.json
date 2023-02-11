@@ -1,1 +1,1 @@
-{"id":"hsbc-hk","name":"HSBC HK","countryCode":"HK","domain":"www.hsbc.com.hk","hasDrs":false,"destinationAccountRequired":false}
+{"id":"hsbc-hk","name":"HSBC HK","domain":"www.hsbc.com.hk","languages":"English, Simplified Chinese, Traditional Chinese","drsAvailable":false,"drsAccountRequired":false,"drsFee":"$150","drsDuration":"","drsLoi":"English, Simplified Chinese, Traditional Chinese","notes":"Through IBKR"}

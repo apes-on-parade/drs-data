@@ -1,1 +1,1 @@
-{"id":"directa-sim","name":"Directa SIM","countryCode":"IT","domain":"www.directa.it","hasDrs":true,"destinationAccountRequired":true}
+{"id":"directa-sim","name":"Directa SIM","domain":"www.directa.it","languages":"English, Italian","drsAvailable":true,"drsAccountRequired":true,"drsFee":"$75","drsDuration":"10-15","drsLoi":"English, Italian","notes":""}

@@ -1,1 +1,1 @@
-{"id":"baader-bank","name":"Baader Bank","countryCode":"DE","domain":"www.baaderbank.de","hasDrs":true,"destinationAccountRequired":false}
+{"id":"baader-bank","name":"Baader Bank","domain":"www.baaderbank.de","languages":"English, German","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$5","drsDuration":"","drsLoi":"English, German","notes":"IBKR Like"}

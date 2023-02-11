@@ -1,1 +1,1 @@
-{"id":"hsbc-uk","name":"HSBC UK","countryCode":"GB","domain":"www.hsbc.co.uk","hasDrs":true,"destinationAccountRequired":false}
+{"id":"hsbc-uk","name":"HSBC UK","domain":"www.hsbc.co.uk","languages":"English","drsAvailable":true,"drsAccountRequired":false,"drsFee":"£55","drsDuration":"","drsLoi":"English","notes":""}

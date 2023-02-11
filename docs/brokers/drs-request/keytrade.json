@@ -1,1 +1,1 @@
-{"id":"keytrade","name":"Keytrade","countryCode":"BE","domain":"www.keytradebank.be","hasDrs":false,"destinationAccountRequired":false}
+{"id":"keytrade","name":"Keytrade","domain":"www.keytradebank.be","languages":"English, Dutch, French","drsAvailable":false,"drsAccountRequired":false,"drsFee":"€35+VAT","drsDuration":"","drsLoi":"English, Dutch, French","notes":"Through IBKR"}

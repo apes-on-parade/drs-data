@@ -1,1 +1,1 @@
-{"id":"westpac","name":"Westpac","countryCode":"AU","domain":"www.westpac.com.au","hasDrs":true,"destinationAccountRequired":false}
+{"id":"westpac","name":"Westpac","domain":"www.westpac.com.au","languages":"English","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$10","drsDuration":"","drsLoi":"English","notes":""}

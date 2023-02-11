@@ -1,1 +1,1 @@
-{"id":"wells-fargo","name":"Wells Fargo","countryCode":"UM","domain":"www.wellsfargo.com","hasDrs":true,"destinationAccountRequired":false}
+{"id":"wells-fargo","name":"Wells Fargo","domain":"www.wellsfargo.com","languages":"English, Spanish","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$0","drsDuration":"","drsLoi":"English, Spanish","notes":""}

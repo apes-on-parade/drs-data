@@ -1,1 +1,1 @@
-{"id":"smartbroker","name":"SmartBroker","countryCode":"DE","domain":"smartbroker.de","hasDrs":false,"destinationAccountRequired":false}
+{"id":"smartbroker","name":"SmartBroker","domain":"smartbroker.de","languages":"English, German","drsAvailable":false,"drsAccountRequired":false,"drsFee":"?","drsDuration":"","drsLoi":"English, German","notes":"Through IBKR"}

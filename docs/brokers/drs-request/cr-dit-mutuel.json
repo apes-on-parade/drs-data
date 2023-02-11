@@ -1,1 +1,1 @@
-{"id":"cr-dit-mutuel","name":"Crédit Mutuel","countryCode":"FR","domain":"www.creditmutuel.fr","hasDrs":true,"destinationAccountRequired":false}
+{"id":"cr-dit-mutuel","name":"Crédit Mutuel","domain":"www.creditmutuel.fr","languages":"French","drsAvailable":true,"drsAccountRequired":false,"drsFee":"€40","drsDuration":"","drsLoi":"French","notes":""}

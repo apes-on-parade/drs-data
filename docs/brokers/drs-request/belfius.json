@@ -1,1 +1,1 @@
-{"id":"belfius","name":"Belfius","countryCode":"BE","domain":"www.belfius.be","hasDrs":false,"destinationAccountRequired":false}
+{"id":"belfius","name":"Belfius","domain":"www.belfius.be","languages":"English, French, Dutch","drsAvailable":false,"drsAccountRequired":false,"drsFee":"$0","drsDuration":"7","drsLoi":"English, French, Dutch","notes":"Through IBKR"}

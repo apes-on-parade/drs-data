@@ -1,1 +1,1 @@
-{"id":"deutsche-bank","name":"Deutsche Bank","countryCode":"DE","domain":"www.db.com","hasDrs":false,"destinationAccountRequired":false}
+{"id":"deutsche-bank","name":"Deutsche Bank","domain":"www.db.com","languages":"English, German","drsAvailable":false,"drsAccountRequired":false,"drsFee":"","drsDuration":"","drsLoi":"English, German","notes":"Through IBKR"}

@@ -1,1 +1,1 @@
-{"id":"us-bank","name":"US Bank","countryCode":"UM","domain":"www.usbank.com","hasDrs":true,"destinationAccountRequired":false}
+{"id":"us-bank","name":"US Bank","domain":"www.usbank.com","languages":"English, Spanish","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$0","drsDuration":"","drsLoi":"English, Spanish","notes":""}

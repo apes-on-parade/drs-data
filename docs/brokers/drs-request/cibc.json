@@ -1,1 +1,1 @@
-{"id":"cibc","name":"CIBC","countryCode":"CA","domain":"www.cibc.com","hasDrs":true,"destinationAccountRequired":false}
+{"id":"cibc","name":"CIBC","domain":"www.cibc.com","languages":"English, French","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$50","drsDuration":"","drsLoi":"English, French","notes":""}

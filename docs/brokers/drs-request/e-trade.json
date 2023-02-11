@@ -1,1 +1,1 @@
-{"id":"e-trade","name":"E*Trade","countryCode":"UM","domain":"us.etrade.com","hasDrs":true,"destinationAccountRequired":false}
+{"id":"e-trade","name":"E*Trade","domain":"us.etrade.com","languages":"English, Spanish","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$0","drsDuration":"","drsLoi":"English, Spanish","notes":""}

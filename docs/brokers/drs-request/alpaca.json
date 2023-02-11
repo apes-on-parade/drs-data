@@ -1,1 +1,1 @@
-{"id":"alpaca","name":"Alpaca","countryCode":"UM","domain":"alpaca.markets","hasDrs":true,"destinationAccountRequired":false}
+{"id":"alpaca","name":"Alpaca","domain":"alpaca.markets","languages":"English, Spanish","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$0","drsDuration":"","drsLoi":"English, Spanish","notes":""}

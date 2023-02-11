@@ -1,1 +1,1 @@
-{"id":"banca-sella","name":"Banca Sella","countryCode":"IT","domain":"www.sella.it","hasDrs":false,"destinationAccountRequired":false}
+{"id":"banca-sella","name":"Banca Sella","domain":"www.sella.it","languages":"Italian","drsAvailable":false,"drsAccountRequired":false,"drsFee":"?","drsDuration":"","drsLoi":"Italian","notes":"Through IBKR"}

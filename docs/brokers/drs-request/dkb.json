@@ -1,1 +1,1 @@
-{"id":"dkb","name":"DKB","countryCode":"DE","domain":"www.dkb.de","hasDrs":true,"destinationAccountRequired":true}
+{"id":"dkb","name":"DKB","domain":"www.dkb.de","languages":"English, German","drsAvailable":true,"drsAccountRequired":true,"drsFee":"$0","drsDuration":"","drsLoi":"English, German","notes":"Through IBKR with conversion"}

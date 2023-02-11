@@ -1,1 +1,1 @@
-{"id":"superhero","name":"Superhero","countryCode":"AU","domain":"www.superhero.com.au","hasDrs":true,"destinationAccountRequired":false}
+{"id":"superhero","name":"Superhero","domain":"www.superhero.com.au","languages":"English","drsAvailable":true,"drsAccountRequired":false,"drsFee":"$115","drsDuration":"5-15","drsLoi":"English","notes":"Cheaper Through Commsec or IBKR"}

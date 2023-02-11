@@ -1,1 +1,1 @@
-{"id":"citibank-hk","name":"Citibank HK","countryCode":"HK","domain":"www.citibank.com.hk","hasDrs":true,"destinationAccountRequired":true}
+{"id":"citibank-hk","name":"Citibank HK","domain":"www.citibank.com.hk","languages":"English, Traditional Chinese","drsAvailable":true,"drsAccountRequired":true,"drsFee":"$50","drsDuration":"10-15","drsLoi":"English, Traditional Chinese","notes":""}
