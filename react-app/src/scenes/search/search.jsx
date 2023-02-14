@@ -69,7 +69,7 @@ const SearchScene = (props) => {
 
 	return (
 		<Container><Stack direction="column" spacing={4} className="page">
-			<Typography style={{textAlign:"center"}}> {l`We have compiled reference data on the top US brokers, issuers, and transfer agents.`}</Typography>
+			<Typography style={{textAlign:"center"}}> {l`This is a compilation of reference data on the top US brokers, issuers, and transfer agents.`}</Typography>
 			<TextField
 				id='query-input-field'
 				label={l`Query`}
@@ -82,7 +82,7 @@ const SearchScene = (props) => {
 			<Typography variant="h4">{l`Brokers`}</Typography>
 			{
 				!brokers ? <Typography>{l`Loading...`}</Typography>
-				: !filteredBrokerIds.length ? <Typography>{l`No transfer agents match your query.`}</Typography>
+				: !filteredBrokerIds.length ? <Typography>{l`No brokers match your query.`}</Typography>
 				: <Stack direction="column" spacing={4}>
 					<Stack direction="row"
 						justifyContent="flex-start"

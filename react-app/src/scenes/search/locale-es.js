@@ -1,7 +1,7 @@
 const translations = {
 	"Query": "Filtro",
 	"We have compiled reference data on the top US brokers, issuers, and transfer agents.":
-		"Hemos recopilado datos de referencia sobre los principales corredores (brokers), emisores (issuers), agentes de transferencia (transfer agents) de los EEUU.",
+		"Esta es una compilación de datos de referencia sobre los principales corredores (brokers), emisores (issuers), y agentes de transferencia (transfer agents) de los EEUU.",
 	"Search Issuers, Transfer Agents, and Brokers":
 		"Buscar emisores, agentes de transferencia y corredores",
 	"Issuers":
