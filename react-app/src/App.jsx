@@ -7,6 +7,7 @@ import './app.css'
 
 const SearchScene = lazy(() => import('./scenes/search/search.jsx'))
 const BrokerScene = lazy(() => import('./scenes/broker/broker.jsx'))
+const IssuerScene = lazy(() => import('./scenes/issuer/issuer.jsx'))
 //const DrsRequestTemplateScene = lazy(() => import('./scenes/drs-request-template/drs-request-template.jsx'))
 
 const App = () => {
@@ -35,6 +36,10 @@ const App = () => {
 			<Route
 				path="/:locale/brokers/:brokerId"
 				element={<Suspense fallback={Loading}><BrokerScene /></Suspense>}
+				/>
+			<Route
+				path="/:locale/issuers/:issuerId"
+				element={<Suspense fallback={Loading}><IssuerScene /></Suspense>}
 				/>
 			</Routes>
 		</Router>

@@ -12,24 +12,22 @@ import Tooltip from '@mui/material/Tooltip'
 import InfoIcon from '@mui/icons-material/Info'
 import Link from '@mui/material/Link'
 
-import Logo from '../../common/components/Logo.jsx'
-
-const BrokerScene = (props) => {
+const IssuerScene = (props) => {
 	//const {} = props
 	const navigate = useNavigate()
-	const {brokerId} = useParams('brokerId')
+	const {issuerId} = useParams('issuerId')
 
 	//Localization
 	const {locale='en'} = useParams('locale')
 	const [l,setLocalization] = useState(()=>()=>"...")
 	useAsyncEffect(loadLocalization,[locale])
 
-	const [broker, setBroker] = useState()
+	const [issuer, setIssuer] = useState()
 
-	useAsyncEffect(load,[brokerId])
+	useAsyncEffect(load,[issuerId])
 
 	return (
-		!broker ? "..."
+		!issuer ? "..."
 		: <Container><Stack direction="column" spacing={4} marginTop={4} className="page">
 			<Typography size="small">
 				<Link href={`/${locale}/search`}>
@@ -38,50 +36,50 @@ const BrokerScene = (props) => {
 					&nbsp; >
 				</Typography>
 			<Typography variant="h2" component="h1">
-				{broker.name}
+				{issuer.name}
 				</Typography>
-			<FactRow>
-				<Logo domain={(broker.website.match(/https?:\/\/([^\/:#?]+)/)||[])[1]} />
-				</FactRow>
-			{broker.languages
-				&& <FactRow label={l`Languages Spoken`}>
-					<Typography>{broker.languages}</Typography>
+			{issuer.transferAgentName
+				&& <FactRow
+					label={l`Transfer Agent`}
+					info={l`An issuer's transfer agent maintains that issuer's official shareholder list/ledger, and is central to the direct registerd ownership of securities. See our Glossary for more info.`}
+					>
+					<Typography>{issuer.transferAgentName}</Typography>
 					</FactRow>
 				}
-			{broker.drsAvailable !== undefined
+			{issuer.transferAgentDtcMemberId
 				&& <FactRow
-					label={l`DRS available`}
-					info={l`Whether the broker allows you to initiate a DRS transfer directly. (Keep in mind, you can still DRS indirectly if not)`}
+					label={l`Transfer Agent DTC Member #`}
+					info={l`The 'Member Number' identifying the transfer agent at the Depository Trust Company (DTC). This number can be used for more explicit DRS requests.`}
 					>
-					<Typography>{broker.drsAvailable ? l`Yes` : l`No`}</Typography>
+					<Typography>{issuer.transferAgentDtcMemberId}</Typography>
 					</FactRow>
 				}
-			{broker.drsFee
+			{issuer.cusip
 				&& <FactRow
-					label={l`DRS Fee`}
-					info={l`Amount charged by the broker to initiate the DRS fee.`}
+					label={l`CUSIP`}
+					info={l`A nine character identifier for finanical instruments, including securities. See our Glossary for more info.`}
 					>
-					<Typography>{broker.drsFee}</Typography>
+					<Typography>{issuer.cusip}</Typography>
 					</FactRow>
 				}
-			{broker.drsDuration
+			{issuer.onlinePurchase !== undefined
 				&& <FactRow
-					label={l`DRS duration (d)`}
-					info={l`Typical timeframe, in business days, for this broker to process your DRS request. This is based on information volunteered by customers, and may change without warning.`}
+					label={l`Online Purchase?`}
+					info={l`In addition to transfering securities into your name via DRS, some securities may also be purchased through an online direct stock purchase plan. See our Glossary for more info.`}
 					>
-					<Typography>{broker.drsDuration}</Typography>
+					<Typography>{issuer.onlinePurchase ? l`Yes` : l`No`}</Typography>
 					</FactRow>
 				}
 			</Stack></Container>
 		)
 
 	function* load(onCancel){
-		if(!brokerId.match(/^[-a-zA-Z0-9]+$/)){
+		if(!issuerId.match(/^[-:a-zA-Z0-9]+$/)){
 			return navigate("/")
 			}
-		const rawResponse = yield fetch(`/brokers/detail/${brokerId}.json`,canceller(onCancel))
-		const broker = yield rawResponse.json()
-		setBroker(broker)
+		const rawResponse = yield fetch(`/issuers/detail/${issuerId}.json`,canceller(onCancel))
+		const issuer = yield rawResponse.json()
+		setIssuer(issuer)
 		}
 
 	function canceller(onCancel){
@@ -120,4 +118,4 @@ const FactRow = (props)=>{
 		</Stack>
 }
 
-export default BrokerScene
+export default IssuerScene

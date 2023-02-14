@@ -5,6 +5,8 @@ import {readOrThrow} from "./index.mjs"
 
 export default reactAppJsonBuilder
 
+function noFilter(){return true}
+
 async function reactAppJsonBuilder({
 	inputPath,
 	inputColumns,
@@ -24,7 +26,7 @@ async function reactAppJsonBuilder({
 
 	for(let column of inputColumns){
 		if(!csvColumns.includes(column.csvHeader)){
-			throw new Error(`Could not find expected column '${column.csvHeader}'`)
+			throw new Error(`Could not find expected column '${column.csvHeader} \n\nReceived: ${csvColumns.join(', ')}`)
 			}
 		}
 	const objects = csvData.map(row => {
@@ -37,7 +39,7 @@ async function reactAppJsonBuilder({
 			}
 		return obj
 		})
-	const filteredObjects = objects.filter(filter)
+	const filteredObjects = objects.filter(filter || noFilter)
 	const countObjectsFiltered = objects.length - filteredObjects.length
 	if(countObjectsFiltered > 0){
 		console.warn(`${countObjectsFiltered} objects were filtered out by the requirement ${filter.toString().slice(0,80)}...`)
@@ -45,6 +47,7 @@ async function reactAppJsonBuilder({
 
 	for(let output of Object.values(outputs||{})){
 		const outputObjects = filteredObjects
+			.filter(output.filter || noFilter)
 			.map(select(output.fields))
 		switch(output.type){
 			case "index":

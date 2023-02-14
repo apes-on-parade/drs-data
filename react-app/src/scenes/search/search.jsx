@@ -14,6 +14,8 @@ import Card from '@mui/material/Card'
 import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 
+import Logo from '../../common/components/Logo.jsx'
+
 const styleMaxTwoLines = {
 	display: "-webkit-box",
 	boxOrient: "vertical",
@@ -69,7 +71,7 @@ const SearchScene = (props) => {
 
 	return (
 		<Container><Stack direction="column" spacing={4} className="page">
-			<Typography style={{textAlign:"center"}}> {l`This is a compilation of reference data on the top US brokers, issuers, and transfer agents.`}</Typography>
+			<Typography style={{textAlign:"center"}}> {l`This is a compilation of reference data on select brokers, issuers and transfer agents dealing with US securities.`}</Typography>
 			<TextField
 				id='query-input-field'
 				label={l`Query`}
@@ -105,7 +107,7 @@ const SearchScene = (props) => {
 										</Stack>
 									</CardContent>
 								<CardActions>
-									<Link href={`/${locale}/brokers/${broker.id}`}>
+									<Link href={`/${locale}/brokers/${broker.id}`} underline="hover">
 										<Button size="small">{l`More details`}</Button>
 										</Link>
 									</CardActions>
@@ -142,7 +144,7 @@ const SearchScene = (props) => {
 							return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={issuer.id}>
 								<CardContent>
 									<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-										{issuer.ticker} ({issuer.exchange})
+										{issuer.id}
 										</Typography>
 									<Stack direction="row" alignItems="center" spacing={1}>
 										{/*<Logo domain={issuer.domain} />*/}
@@ -154,9 +156,11 @@ const SearchScene = (props) => {
 										{issuer.transferAgent}
 										</Typography>
 									</CardContent>
-								{/*<CardActions>
-									<Button size="small">{l`More details`}</Button>
-									</CardActions>*/}
+								{issuer.detail && <CardActions>
+									<Link href={`/${locale}/issuers/${issuer.id}`} underline="hover">
+										<Button size="small">{l`More details`}</Button>
+										</Link>
+									</CardActions>}
 								</Card>
 							})}
 						</Stack>
@@ -348,17 +352,5 @@ function canceller(onCancel){
 function indexBy(property){
 	return (obj,x,i) => ({...obj,[x[property]]:x})
 	}
-
-function Logo({domain}){
-	const [didError, setDidError] = useState(undefined)
-
-	return <img
-		style={{display: didError ? 'none' : 'inline-block', boxShadow: '1px 1px 4px 0px rgba(0,0,0,0.33)'}}
-		onError={onError}
-		src={`https://logo.clearbit.com/${domain}?s=48`}
-		/>
-
-	function onError(){setDidError(true)}
-}
 
 export default SearchScene
