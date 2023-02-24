@@ -1,1 +1,4 @@
 config.json
+state.json
+inspect/*.json
+inspect-*

@@ -14,5 +14,5 @@ async function main(){
 			row.map(value=>JSON.stringify(value)).join(",")
 			)
 			.join("\n")
-	await writeFile("cik_tickers.csv", csv)
+	await writeFile("output.csv", csv)
 	}
