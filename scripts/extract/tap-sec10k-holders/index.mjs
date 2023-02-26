@@ -29,12 +29,13 @@ async function main(){
 	// console.log(cikInfo.size)
 
 	let state = await getState()
+	console.log({state})
 	let slice
 	const output = await Output(import.meta.url)
 	while(
 		await output.emitState(state),
 		state = slice && slice.nextState || state,
-		slice = getSlice({start:config.startDate, end:config.endDate, min:state.min, max:state.max})
+		slice = getSlice({start:config.startDate, end:config.endDate, min:state.min, max:state.max, lastHash:state.lastHash})
 		){
 		const {date} = slice
 		console.log("\n### "+date)
@@ -70,8 +71,15 @@ async function main(){
 			const doc = cheerio.load(indexText)
 			const mainDocUrl = doc("#formDiv td>a").first()?.attr("href")?.replace("/ix?doc=","https://www.sec.gov").replace(/^\//,"https://www.sec.gov/")
 			if(!mainDocUrl){continue}
-
 			console.log("Doc: "+mainDocUrl.slice(0,115))
+			if(state.lastUrl){
+				if(mainDocUrl == state.lastUrl){
+					console.log("     State lastUrl reached")
+					delete state.lastUrl
+					}
+				else {continue}
+				}
+
 			await wait(500)
 			let docText
 			try{docText = await fetch(mainDocUrl).then(resp=>resp.text())}
@@ -88,6 +96,13 @@ async function main(){
 				.filter(str=> str.match(/holders/i) && str.match(/registered|of record/) && str.match(/[0-9][0-9]/) && !str.match(/dividend/i))
 
 			for(const segment of docSegments){
+				const textHash = createHash('sha1').update(segment).digest('base64').slice(0,12)
+				if(state.lastHash){
+					console.log("     " + state.lastHash + "  " + textHash)
+					if(textHash == state.lastHash){delete state.lastHash}
+					continue
+					}
+
 				const interpretation = await openaiInterpret(segment)
 
 				for(let e of interpretation.errors){console.error(">>> ⛔️ "+JSON.stringify(e))}
@@ -102,7 +117,7 @@ async function main(){
 				const row = {
 					filingDate: date,
 					cik: idxEntry.cik,
-					textHash: createHash('sha1').update(segment).digest('base64').slice(0,12),
+					textHash,
 					docUrl: mainDocUrl,
 					textOfInterest: segment,
 					openaiUncertain: "".padEnd(interpretation.uncertainty,"?"),
@@ -127,12 +142,16 @@ async function getState(){
 	const currentData = parse(csvText,{columns:true,skip_empty_lines:true})
 	if(!currentData.length){return {}}
 	const dates = currentData.map(r=>r.filingDate)
+	const lastUrl = currentData.slice(-1)[0].docUrl
+	const lastHash = currentData.slice(-1)[0].textHash
 	return {
 		min: dates.reduce(min),
-		max: dates.reduce(max)
+		max: dates.reduce(max),
+		lastUrl,
+		lastHash
 		}
 	}
-function getSlice({start,end,min,max}){
+function getSlice({start,end,min,max,lastHash}){
 	/* Given a min->max date from the state, and a start->end target from the config,
 	  returns a date to run next, and a nextState that expaons the min->max range by that date */
 	const oneDay = 24*60*60*1000
@@ -163,11 +182,13 @@ function getSlice({start,end,min,max}){
 	let targetDate
 	let nextState
 	if(startDate<minDate){
-		targetDate = (new Date(minDate - oneDay)).toISOString().slice(0,10)
+		targetDate = lastHash ? minDate.toISOString().slice(0,10)
+			: (new Date(minDate - oneDay)).toISOString().slice(0,10)
 		nextState = {max, min:targetDate}
 	}
 	else if(maxDate<endDate && maxDate < yesterday ){
-		targetDate = (new Date(maxDate + oneDay)).toISOString().slice(0,10) //TODO: check for date logic correctness
+		targetDate = lastHash ? maxDate.toISOString().slice(0,10)
+			: (new Date(maxDate + oneDay)).toISOString().slice(0,10) //TODO: check for date logic correctness
 		nextState = {min, max:targetDate}
 	}
 	return {

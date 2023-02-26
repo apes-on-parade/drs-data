@@ -1,0 +1,29 @@
+[
+    {
+        "name": "cik",
+        "type": "INTEGER",
+        "mode": "REQUIRED",
+        "description": "SEC Central Index Key identifying the issuer/company"
+    },
+    {
+        "name": "name",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "Issuer/company Name",
+        "maxLength": "1024"
+    },
+    {
+        "name": "ticker",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "Current ticker symbol",
+        "maxLength": "12"
+    },
+    {
+        "name": "exchange",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "Exchange on which the ticker trades",
+        "maxLength": "12"
+    }
+]

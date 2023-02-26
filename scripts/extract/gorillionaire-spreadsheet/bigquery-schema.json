@@ -1,0 +1,104 @@
+[
+    {
+        "name": "stockSymbol",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "exchange",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "companyName",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "transferAgent",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "hasOnlinePurchase",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "dtcMemberId",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "transferAgentCompletion",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "irEmails",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "irPhone",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "irAddress",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "irCompletion",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "sharesOutstanding",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "cusip",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "companyCompletion",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "overallCompletion",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "cik",
+        "type": "INTEGER",
+        "mode": "NULLABLE",
+        "description": ""
+    },
+    {
+        "name": "sharesDirectRegistered",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": ""
+    }
+]
