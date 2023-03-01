@@ -1,3 +1,4 @@
+--CREATE OR REPLACE TABLE `apes-on-parade-default.dist.issuers` AS
 WITH unique_holding_numbers as (
   -- Because a 10K doc may contain 2 sentences that describe the holdings, or because the extraction script may have double-extracted a sentence
   -- we discard any sentences that both specify the same number. However, since there can be multiple sentences that each describe separate classes
@@ -6,7 +7,7 @@ WITH unique_holding_numbers as (
     cik,
     filingDate,
     numHolders,
-  FROM `apes-on-parade-default.drs_data.registered_holders`
+  FROM `apes-on-parade-default.src_first_party.10k_holders_snapshot`
   GROUP BY 1, 2, 3
   ),
 cik_date_total_holders AS (
@@ -22,12 +23,12 @@ cik_date_doc_urls as (
     cik,
     filingDate,
     ARRAY_AGG(DISTINCT docUrl) as docUrls
-  FROM `apes-on-parade-default.drs_data.registered_holders`
+  FROM `apes-on-parade-default.src_first_party.10k_holders_snapshot`
   GROUP BY 1, 2
   ),
 cik_latest_filing as (
   SELECT cik, MAX(filingDate) as filingDate
-  FROM `apes-on-parade-default.drs_data.registered_holders`
+  FROM `apes-on-parade-default.src_first_party.10k_holders_snapshot`
   GROUP BY 1
   ),
 cik_sec as (
@@ -38,7 +39,7 @@ cik_sec as (
       ELSE MIN(name)
       END as name,
     LOGICAL_OR(exchange='NYSE' OR exchange='Nasdaq') as is_traded
-  FROM `apes-on-parade-default.drs_data.cik_tickers`
+  FROM `apes-on-parade-default.src_public.sec_cik_tickers`
   GROUP BY 1
 ),
 cik_gorillionaire as (
@@ -48,13 +49,24 @@ cik_gorillionaire as (
       THEN NULL
       ELSE MIN(spreadsheet.companyName)
       END as name,
+    STRUCT(
+      CASE WHEN MIN(spreadsheet.dtcMemberId) <> MAX(spreadsheet.dtcMemberId)
+        THEN NULL
+        ELSE MIN(spreadsheet.dtcMemberId)
+        END as dtcMemberId,
+      CASE WHEN MIN(spreadsheet.transferAgent) <> MAX(spreadsheet.transferAgent)
+        THEN NULL
+        ELSE MIN(spreadsheet.transferAgent)
+        END as name
+    ) as transferAgent,
     ARRAY_AGG(STRUCT(
       spreadsheet.exchange,
       spreadsheet.stockSymbol as ticker,
-      spreadsheet.cusip
+      spreadsheet.cusip,
+      spreadsheet.hasOnlinePurchase
     )) as tickers
   FROM `apes-on-parade-default.drs_data.gorillionaire_tickers` as spreadsheet
-  INNER JOIN `apes-on-parade-default.drs_data.cik_tickers` as official
+  INNER JOIN `apes-on-parade-default.src_public.sec_cik_tickers` as official
     ON  official.cik = spreadsheet.cik
     AND official.exchange = spreadsheet.exchange
     AND official.ticker = spreadsheet.stockSymbol
@@ -85,4 +97,4 @@ LEFT JOIN cik_gorillionaire
 WHERE cik_sec.is_traded
 
 ORDER BY holders.totalHolders DESC
-LIMIT 50
+LIMIT 25

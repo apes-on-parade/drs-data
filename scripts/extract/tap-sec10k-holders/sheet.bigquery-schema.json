@@ -1,0 +1,49 @@
+[
+    {
+        "name": "filingDate",
+        "type": "DATE",
+        "mode": "REQUIRED",
+        "description": "Filing date of the 10-k that contained the data"
+    },
+    {
+        "name": "cik",
+        "type": "INTEGER",
+        "mode": "REQUIRED",
+        "description": "SEC Central Index Key identifying the issuer"
+    },
+    {
+        "name": "textHash",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "Short hash of the textOfInterest field"
+    },
+    {
+        "name": "docUrl",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "Path of the URL of the 10K filing where the data was filed. Append to prefix - https://www.sec.gov/Archives/edgar/data/"
+    },
+    {
+        "name": "textOfInterest",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "The text from the filing that contains the record holder data"
+    },
+    {
+        "name": "openaiFinding",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "OpenAI's interpretation of the number of record holders"
+    },
+    {
+        "name": "openaiUncertainty",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "manualReview",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "Manual review of number of holders"
+    }
+]
