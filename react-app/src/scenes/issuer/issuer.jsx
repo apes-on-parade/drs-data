@@ -12,6 +12,13 @@ import Tooltip from '@mui/material/Tooltip'
 import InfoIcon from '@mui/icons-material/Info'
 import Link from '@mui/material/Link'
 
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+
 const IssuerScene = (props) => {
 	//const {} = props
 	const navigate = useNavigate()
@@ -38,6 +45,20 @@ const IssuerScene = (props) => {
 			<Typography variant="h2" component="h1">
 				{issuer.name}
 				</Typography>
+			{issuer.holders?.totalHolders
+				&& <FactRow
+					label={l`Holders of Record`}
+					info={l`The number of holders of record, a.k.a. registered shareholders, as stated on the company's most recently retrieved annual 10-K filing on ${issuer.holders.filingDate}`}
+					>
+					<Typography>
+						{parseInt(issuer.holders.totalHolders).toLocaleString("en-US")}
+						{issuer.holders.docUrls.map((url,u)=>
+							<sup key={u}> <a href={"https://www.sec.gov/Archives/edgar/data/"+url} target="_blank">[{u+1}]</a> </sup>
+							)}
+						</Typography>
+
+					</FactRow>
+				}
 			{issuer.transferAgentName
 				&& <FactRow
 					label={l`Transfer Agent`}
@@ -54,13 +75,34 @@ const IssuerScene = (props) => {
 					<Typography>{issuer.transferAgentDtcMemberId}</Typography>
 					</FactRow>
 				}
-			{issuer.cusip
-				&& <FactRow
-					label={l`CUSIP`}
-					info={l`A nine character identifier for finanical instruments, including securities. See our Glossary for more info.`}
-					>
-					<Typography>{issuer.cusip}</Typography>
-					</FactRow>
+			{issuer.tickers?.length &&
+				<Box>
+					<Typography variant="h3">Publicly-traded securities</Typography>
+					<TableContainer>
+						<Table sx={{ minWidth: 650 }}>
+							<TableHead sx={{fontWeight:"bold"}}>
+								<TableRow>
+									<TableCell>CUSIP</TableCell>
+									<TableCell align="center">Exchange</TableCell>
+									<TableCell align="center">Ticker</TableCell>
+									<TableCell align="center">Direct Purchase?</TableCell>
+									</TableRow>
+								</TableHead>
+							<TableBody>
+								{issuer.tickers.map(t => (
+									<TableRow key={t.cusip}>
+										<TableCell component="th" scope="row">
+											{t.cusip}
+										</TableCell>
+										<TableCell align="center">{t.exchange}</TableCell>
+										<TableCell align="center">{t.ticker}</TableCell>
+										<TableCell align="center">{t.hasOnlinePurchase===true?"Yes":t.hasOnlinePurchase===false?"No":"Unknown"}</TableCell>
+										</TableRow>
+									))}
+								</TableBody>
+							</Table>
+						</TableContainer>
+					</Box>
 				}
 			{issuer.onlinePurchase !== undefined
 				&& <FactRow

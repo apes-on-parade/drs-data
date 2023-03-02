@@ -25,7 +25,8 @@ const styleMaxTwoLines = {
 	fontSize: "16pt",
 	flexGrow: 1
 	}
-const cardsPerPage=12
+const brokersPerPage=12
+const issuersPerPage=24
 
 const SearchScene = (props) => {
 	//const {} = props
@@ -143,24 +144,26 @@ const SearchScene = (props) => {
 							const issuer = issuers[iid]
 							return <Card sx={{ width: 320, marginLeft: 2, marginRight: 2 }} key={issuer.id}>
 								<CardContent>
-									<Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-										{issuer.id}
-										</Typography>
 									<Stack direction="row" alignItems="center" spacing={1}>
 										{/*<Logo domain={issuer.domain} />*/}
 										<Typography component="div" style={styleMaxTwoLines}>
 											{issuer.name}
 											</Typography>
 										</Stack>
-									<Typography variant="body2">
-										{issuer.transferAgent}
-										</Typography>
+									{issuer.tickers?.length &&
+										<Typography sx={{ fontSize: "0.8em" }} color="text.secondary" gutterBottom>
+											{issuer.tickers.map(t=>t.ticker).join(", ")}
+											</Typography>
+										}
+									{issuer.holders && <Typography variant="body2">
+										👥 {parseInt(issuer.holders).toLocaleString()}
+										</Typography>}
 									</CardContent>
-								{issuer.detail && <CardActions>
+								<CardActions>
 									<Link href={`/${locale}/issuers/${issuer.id}`} underline="hover">
 										<Button size="small">{l`More details`}</Button>
 										</Link>
-									</CardActions>}
+									</CardActions>
 								</Card>
 							})}
 						</Stack>
@@ -255,16 +258,18 @@ const SearchScene = (props) => {
 			}
 		const query = debouncedQueryText.trim().toLowerCase()
 		const filteredIssuerIds =
-			query === ""
-			? Object.keys(issuers)
-			: Object.values(issuers)
-			 	.filter(i =>
-					i.name.toLowerCase().includes(query)
-					|| i.ticker.toLowerCase().includes(query)
+			(query === ""
+				? Object.values(issuers)
+				: Object.values(issuers)
+				 	.filter(i =>
+						i.name.toLowerCase().includes(query)
+						|| i.tickers.some(t=>t.ticker.toLowerCase().includes(query))
+						)
 					)
+				.sort((a,b)=>b.holders-a.holders||0)
 				.map(i => i.id)
 		setFilteredIssuerIds(filteredIssuerIds)
-		const pages = Math.ceil(filteredIssuerIds.length/cardsPerPage)
+		const pages = Math.ceil(filteredIssuerIds.length/issuersPerPage)
 		setIssuersPaging({page:0, pages})
 		}
 
@@ -282,7 +287,7 @@ const SearchScene = (props) => {
 					)
 				.map(b => b.id)
 		setFilteredBrokerIds(filteredBrokerIds)
-		const pages = Math.ceil(filteredBrokerIds.length/cardsPerPage)
+		const pages = Math.ceil(filteredBrokerIds.length/brokersPerPage)
 		setBrokersPaging({page:0, pages})
 		}
 	function filterTransferAgents(){
@@ -304,8 +309,8 @@ const SearchScene = (props) => {
 
 	function paginateIssuers(){
 		const visibleIssuerIds = filteredIssuerIds.slice(
-			issuersPaging.page*cardsPerPage,
-			(issuersPaging.page+1)*cardsPerPage
+			issuersPaging.page*issuersPerPage,
+			(issuersPaging.page+1)*issuersPerPage
 			)
 		setVisibleIssuerIds(visibleIssuerIds)
 		}
@@ -324,8 +329,8 @@ const SearchScene = (props) => {
 
 	function paginateBrokers(){
 		const visibleBrokerIds = filteredBrokerIds.slice(
-			brokersPaging.page*cardsPerPage,
-			(brokersPaging.page+1)*cardsPerPage
+			brokersPaging.page*brokersPerPage,
+			(brokersPaging.page+1)*brokersPerPage
 			)
 		setVisibleBrokerIds(visibleBrokerIds)
 		}

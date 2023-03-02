@@ -1,3 +1,5 @@
 # For now, not sure whether this data is intended to be published yet
 
 *.csv
+*.json
+*.ndjson
