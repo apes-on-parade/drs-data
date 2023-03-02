@@ -59,20 +59,20 @@ const IssuerScene = (props) => {
 
 					</FactRow>
 				}
-			{issuer.transferAgentName
+			{issuer.transferAgent?.name
 				&& <FactRow
 					label={l`Transfer Agent`}
 					info={l`An issuer's transfer agent maintains that issuer's official shareholder list/ledger, and is central to the direct registerd ownership of securities. See our Glossary for more info.`}
 					>
-					<Typography>{issuer.transferAgentName}</Typography>
+					<Typography>{issuer.transferAgent.name}</Typography>
 					</FactRow>
 				}
-			{issuer.transferAgentDtcMemberId
+			{issuer.transferAgent?.dtcMemberId
 				&& <FactRow
 					label={l`Transfer Agent DTC Member #`}
 					info={l`The 'Member Number' identifying the transfer agent at the Depository Trust Company (DTC). This number can be used for more explicit DRS requests.`}
 					>
-					<Typography>{issuer.transferAgentDtcMemberId}</Typography>
+					<Typography>{issuer.transferAgent.dtcMemberId}</Typography>
 					</FactRow>
 				}
 			{issuer.tickers?.length &&
@@ -96,7 +96,7 @@ const IssuerScene = (props) => {
 										</TableCell>
 										<TableCell align="center">{t.exchange}</TableCell>
 										<TableCell align="center">{t.ticker}</TableCell>
-										<TableCell align="center">{t.hasOnlinePurchase===true?"Yes":t.hasOnlinePurchase===false?"No":"Unknown"}</TableCell>
+										<TableCell align="center">{t.hasOnlinePurchase===true?"Yes":t.hasOnlinePurchase===false?"No":t.hasOnlinePurchase||"Unknown"}</TableCell>
 										</TableRow>
 									))}
 								</TableBody>
