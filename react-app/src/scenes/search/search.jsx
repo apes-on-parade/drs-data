@@ -72,7 +72,7 @@ const SearchScene = (props) => {
 
 	return (
 		<Container><Stack direction="column" spacing={4} className="page">
-			<Typography style={{textAlign:"center"}}> {l`This is a compilation of reference data on select brokers, issuers and transfer agents dealing with US securities. Data is provided 'as is' and without warranty.`}</Typography>
+			<Typography style={{textAlign:"center"}}> {l`This is a compilation of reference data on select brokers, issuers and transfer agents dealing with US securities. Data is provided "as is" and without warranty.`}</Typography>
 			<TextField
 				id='query-input-field'
 				label={l`Query`}
