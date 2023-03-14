@@ -6,7 +6,7 @@ import {parse} from 'csv-parse/sync'
 import {readOrThrow} from '../../common/index.mjs'
 import {Output} from './lib/output.mjs'
 import {createHash} from 'crypto'
-import {OpenaiInterpret} from './lib/openai-interpret.mjs'
+//import {OpenaiInterpret} from './lib/openai-interpret.mjs'
 
 main()
 
