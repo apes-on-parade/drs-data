@@ -6,7 +6,7 @@ import {parse} from 'csv-parse/sync'
 import {readOrThrow} from '../../common/index.mjs'
 import {Output} from './lib/output.mjs'
 import {createHash} from 'crypto'
-//import {OpenaiInterpret} from './lib/openai-interpret.mjs'
+//import { fetchBuilder, FileSystemCache } from 'node-fetch-cache'
 
 main()
 
@@ -14,7 +14,7 @@ main()
 async function main(){
 
 	const config = JSON.parse(await readFile(new URL("config.json", import.meta.url)))
-	const openaiInterpret = OpenaiInterpret(config.openAiKey)
+	//const fetch = fetchBuilder.withCache(new FileSystemCache({directory: config.cacheDirectory || ".cache"}))
 
 	const cikPath = '/scripts/extract/cik-tickers-sec/output.csv'
 	const cikCsv = parse(await readOrThrow(
@@ -39,15 +39,16 @@ async function main(){
 		slice = getSlice({start:config.startDate, end:config.endDate, min:state.min, max:state.max, lastHash:state.lastHash})
 		){
 		const {date} = slice
-		console.log("\n### "+date)
-
 		const [year,month,day] = date.split('-')
 		const quarter = Math.ceil(parseInt(month)/3)
+		const idxUrl = `https://www.sec.gov/Archives/edgar/daily-index/${year}/QTR${quarter}/crawler.${year}${month}${day}.idx`
+		console.log("\n### "+ date + " - " + idxUrl)
 
 		await wait(600)
-		const idxText = await fetch(`https://www.sec.gov/Archives/edgar/daily-index/${year}/QTR${quarter}/crawler.${year}${month}${day}.idx`)
+		const idxText = await fetch(idxUrl)
 			.then(resp=>resp.ok && resp.text())
 			.catch(e=>false)
+
 		if(!idxText){
 			console.log(`    ${date} not found. Skipping.`)
 			continue
@@ -97,50 +98,37 @@ async function main(){
 			catch(e){console.error(">>> ⛔️ ",e); continue}
 
 			let docSegments = docText
-				.replace(/<\/?(b|i|strong|em|span)[^>]*>/g,"")
+				.replace(/<\/?(b|i|strong|em|span|a)\b[^>]*>/ig,"")
 				.split(/<[^>]+>/)
 				.filter(Boolean)
-				.filter(str=> str.match(/holders/i) && str.match(/registered|of record/) && str.match(/[0-9][0-9]/))
 				.map(str => str.replace(/&#(\d+);/gi, (match, n)=> String.fromCharCode(parseInt(n))))
 				.map(str => str.replace(/&#x([0-9a-fA-F]+);/gi, (match, n)=> String.fromCharCode(parseInt(n,16))))
-				.flatMap(paragraph => paragraph.split(/\. |\.$/g).map(str=>str.trim()).filter(Boolean))
+				//.flatMap(paragraph => paragraph.split(/\. |\.$/g).map(str=>str.trim()).filter(Boolean))
 				.filter(str=>
 					str.match(/transfer agent/i)
-					&& str.match(/ComputerShare|AST|American Stock|Equiniti|Continental|Broadridge/i)
+					&& str.match(/ComputerShare|American Stock|Equiniti|Continental|Broadridge/i)
 					)
-			if(!docSegments.length){docSegments = ["No segments matched"]}
 
-			for(const segment of docSegments){
-				const textHash = createHash('sha1').update(date+idxEntry.cik+segment).digest('base64').slice(0,12)
-				if(state.lastHash){
-					console.log("     " + state.lastHash + "  " + textHash)
-					if(textHash == state.lastHash){delete state.lastHash}
-					continue
-					}
-
-				// const interpretation = await openaiInterpret(segment)
-				//
-				// for(let e of interpretation.errors){console.error(">>> ⛔️ "+JSON.stringify(e))}
-				//
-				// console.log("  > "
-				// 	+ (interpretation.uncertainty==0 ? "  " : interpretation.uncertainty==1 ? "? " :"??" )
-				// 	+ "  " + interpretation.finding.slice(0,15).padEnd(15," ")
-				// 	+ "  " + JSON.stringify(interpretation.alternatives.map(a=>a.slice(0,15))).slice(0,40).padEnd(40," ")
-				// 	+ "  " + interpretation.traceId.padEnd(20," ")
-				// 	+ "  " + segment.replace(/\s+/g," ").slice(0,100)
-				// 	)
-				const row = {
-					filingDate: date,
-					cik: idxEntry.cik,
-					textHash,
-					formUrl: idxEntry.url,
-					htmlUrl: mainDocUrl,
-					textOfInterest: segment,
-					// openaiUncertain: "".padEnd(interpretation.uncertainty,"?"),
-					// openaiFinding: interpretation.finding,
-					}
-				output.emitRow(row)
+			if(!docSegments.length){continue}
+			const transferAgents = docSegments.map(extractTransferAgent).filter(unique)
+			const transferAgentId = transferAgents.length === 1 ? transferAgents[0] : null
+			const segment = docSegments.join("\n")
+			const textHash = createHash('sha1').update(date+idxEntry.cik+segment).digest('base64').slice(0,12)
+			if(state.lastHash){
+				console.log("     " + state.lastHash + "  " + textHash)
+				if(textHash == state.lastHash){delete state.lastHash}
+				continue
 				}
+			const row = {
+				filingDate: date,
+				cik: idxEntry.cik,
+				textHash,
+				formUrl: idxEntry.url,
+				htmlUrl: mainDocUrl,
+				textOfInterest: segment,
+				transferAgentId: extractTransferAgent(segment)
+				}
+			output.emitRow(row)
 			}
 		}
 		output.close()
@@ -202,12 +190,13 @@ function getSlice({start,end,min,max,lastHash}){
 			: (new Date(minDate - oneDay)).toISOString().slice(0,10)
 		nextState = {max, min:targetDate}
 	}
-	else if(maxDate<endDate && maxDate < yesterday ){
-		targetDate = lastHash ? maxDate.toISOString().slice(0,10)
-			: (new Date(maxDate + oneDay)).toISOString().slice(0,10) //TODO: check for date logic correctness
-		nextState = {min, max:targetDate}
-	}
-	return {
+	// TODO: I think there is a bug in the forward date logic that causes an endless loop on yesterday, revisit this when needed, and troubleshoot
+	// else if(maxDate < endDate && maxDate < yesterday ){
+	// 	targetDate = lastHash ? maxDate.toISOString().slice(0,10)
+	// 		: (new Date(maxDate + oneDay)).toISOString().slice(0,10) //TODO: check for date logic correctness
+	// 	nextState = {min, max:targetDate}
+	// }
+	return targetDate && {
 		date: targetDate,
 		nextState
 		}
@@ -216,3 +205,11 @@ function getSlice({start,end,min,max,lastHash}){
 function min(a,b){return a<b ? a : b}
 function max(a,b){return a>b ? a : b}
 function indexBy(prop){return (accum,x)=>({...accum, [x[prop]]:x})}
+function unique(x,i,arr){return arr.indexOf(x)===i}
+
+function extractTransferAgent(str){
+	const ids = {computershare:7807, ast:7805, "american stock":7805, equiniti:7806, continental:7808, broadridge:7824}
+	const name = (str.match(/ComputerShare|AST|American Stock|Equiniti|Continental|Broadridge/i)||[""])[0].toLowerCase()
+	return ids[name]
+
+}

@@ -4,7 +4,7 @@ import {stringify} from 'csv-stringify/sync'
 async function Output(basePath){
 	const path = new URL("output.csv", basePath)
 	const statePath = new URL("state.json", basePath)
-	const header = "filingDate,cik,textHash,formUrl,htmlUrl,textOfInterest\n"
+	const header = "filingDate,cik,textHash,formUrl,htmlUrl,textOfInterest,transferAgentId\n"
 	try{await writeFile(path, header, {encoding: "utf8", flag:"wx"})} //x flag means it fails if the file already exists
 	catch(e){}
 
@@ -19,8 +19,7 @@ async function Output(basePath){
 				row.formUrl,
 				row.htmlUrl,
 				row.textOfInterest,
-				// row.openaiUncertain,
-				// row.openaiFinding
+				row.transferAgentId
 				]]))
 			},
 		emitState: async function emitState(state){

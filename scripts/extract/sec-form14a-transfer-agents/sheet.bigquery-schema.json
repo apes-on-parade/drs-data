@@ -1,0 +1,40 @@
+[
+    {
+        "name": "filingDate",
+        "type": "DATE",
+        "mode": "REQUIRED",
+        "description": "Filing date of the Form 14A"
+    },
+    {
+        "name": "cik",
+        "type": "INTEGER",
+        "mode": "REQUIRED",
+        "description": "SEC Central Index Key identifying the issuer"
+    },
+    {
+        "name": "textHash",
+        "type": "STRING",
+        "mode": "NULLABLE",
+        "description": "Short hash of the contents of the row. Usable for resuming extraction."
+    },
+    {
+        "name": "formUrl",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "htmlUrl",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "textOfInterest",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "transferAgentId",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    }
+]

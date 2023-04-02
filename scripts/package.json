@@ -10,6 +10,7 @@
   "license": "UNLICENSED",
   "dependencies": {
     "cheerio": "^1.0.0-rc.12",
-    "csv": "^6.2.5"
+    "csv": "^6.2.5",
+    "node-fetch-cache": "^3.1.1"
   }
 }
