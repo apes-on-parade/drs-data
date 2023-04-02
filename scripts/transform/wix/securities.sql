@@ -30,14 +30,15 @@ SELECT
     WHEN "7824" THEN "https://www.broadridge-ir.com/stock-info/transfer-agent/default.aspx"
     END as taURL,
   "https://" || domain as companyInfoUrl,
-  "https://logo.clearbit.com/"
-    || domain
-    || "?s=48"
-    as logo,
+  -- "https://logo.clearbit.com/"
+  --   || domain
+  --   || "?s=48"
+  --   as logo,
   "Interested in contacting "
   || issuerNickname
   || " to let them know you’d like to see DRS numbers disclosed in 10Q and 10K reports? Click here to help you get started."
-  as contactCallToAction
+  as contactCallToAction,
+  "https://www.sec.gov/edgar/browse/?CIK=" || CAST( issuer.cik AS STRING) as issuerEdgarLink
 
 FROM `apes-on-parade-default.src_first_party.curated_tickers_snapshot`
 LEFT JOIN UNNEST([
