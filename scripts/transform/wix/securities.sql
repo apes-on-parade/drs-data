@@ -1,4 +1,9 @@
 SELECT
+  REGEXP_REPLACE(
+    TO_HEX(SHA1(exchange||":"||stockSymbol)),
+    "^([0-9a-f]{8})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{4})([0-9a-f]{12})",
+    "\\1-\\2-\\3-\\4-\\5"
+  ) as _id,
   exchange || " - " || stockSymbol as title,
   stockSymbol,
   exchange,
