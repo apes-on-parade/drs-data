@@ -1,0 +1,77 @@
+[
+    {
+        "name": "name",
+        "type": "STRING",
+        "mode": "REQUIRED"
+    },
+    {
+        "name": "country",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "languages",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "hasDirectDrs",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "requiresExistingAccount",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "requiresLetterOfInstruction",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "note",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "expectedDrsFee",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "expectedDrsDuration",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "contactInfoCompletion",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "phone",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "email",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "mailingAddress",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "website",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    },
+    {
+        "name": "twitter",
+        "type": "STRING",
+        "mode": "NULLABLE"
+    }
+]
