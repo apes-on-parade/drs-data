@@ -1,3 +1,5 @@
+-- Use /scripts/common/ndjson-to-files.mjs to reformat BQ output into react-app expected format
+
 SELECT
 	cik as id,
 	name,

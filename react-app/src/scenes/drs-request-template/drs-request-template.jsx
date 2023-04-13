@@ -20,24 +20,24 @@ const DrsRequestTemplateScene = (props) => {
 	useAsyncEffect(loadLocalization,[locale])
 
 	//Core state
-	const [issuers, setIssuers] = useState()
+	const [securities, setSecurities] = useState()
 	const [brokers, setBrokers] = useState()
-	const [issuerOptions, setIssuerOptions] = useState([])
+	const [securitiesOptions, setSecuritiesOptions] = useState([])
 	const [brokerOptions, setBrokerOptions] = useState([])
-	const [selectedIssuerOptions, setSelectedIssuerOptions] = useState([])
+	const [selectedSecuritiesOptions, setSelectedSecuritiesOptions] = useState([])
 	const [selectedBrokerOption,  setSelectedBrokerOption] = useState(null)
 	const [transferAgents, setTransferAgents] = useState({})
 
-	const [accountInfoOptions] = useState(["Standard", "401(k)", "IRA", "Other retirement"])
+	//const [accountInfoOptions] = useState(["Standard", "401(k)", "IRA", "Other retirement"])
 
 
-	useAsyncEffect(loadIssuers,[])
+	useAsyncEffect(loadSecurities,[])
 	useAsyncEffect(loadBrokers,[])
 	useAsyncEffect(loadBrokerDetails,[selectedBrokerOption])
-	useAsyncEffect(loadIssuerDetails,[selectedIssuerOptions])
+	useAsyncEffect(loadSecurityDetails,[selectedSecurityOptions])
 
 	const broker = selectedBrokerOption && brokers[selectedBrokerOption.id]
-	const selectedIssuers = selectedIssuerOptions.map(option=>issuers[option.id])
+	const selectedSecurities = selectedSecurititesOptions.map(option=>securities[option.id])
 
 	return <Stack direction="column" spacing={4} className="project-page">
 			<Typography style={{textAlign:"center"}}>This form can help you prepare your DRS request. We do not collect or process information entered here, nor submit the request on your behalf.</Typography>
@@ -50,23 +50,23 @@ const DrsRequestTemplateScene = (props) => {
 					onChange={(evt,val)=>setSelectedBrokerOption(val)}
 					renderInput={(params) => <TextField {...params} label="Broker" placeholder="Your broker" />}
 					/>
-				<Autocomplete
+				{/*<Autocomplete
 					style={{ flexGrow: 1 }}
 					options={accountInfoOptions}
 					renderInput={(params) => <TextField {...params} label="Account Type" placeholder="(Optional) Whether your account is a 401(k), IRA, etc." />}
-					/>
+					/>*/}
 				</Stack>
 			<Autocomplete
 				multiple filterSelectedOptions
-				options={issuerOptions}
+				options={securitiesOptions}
 				getOptionLabel={(option) => option.label}
-				value={selectedIssuerOptions}
-				onChange={(evt,val)=>setSelectedIssuerOptions(val)}
+				value={selectedSecuritiesOptions}
+				onChange={(evt,val)=>setSelectedSecurititesOptions(val)}
 				renderInput={(params) => (
 					<TextField
 						{...params}
-						label="Stocks"
-						placeholder="Stocks/tickers to DRS"
+						label="Securities"
+						placeholder="Securities (stocks/tickers) to DRS"
 						/>
 					)}
 				/>
@@ -76,7 +76,7 @@ const DrsRequestTemplateScene = (props) => {
 			{broker && broker.drsAvailable===true && <>
 				<Typography>{l`Good news! Your broker does handle DRS requests!`}</Typography>
 				</>}
-			{selectedIssuers.length>0 &&
+			{selectedSecurities.length>0 &&
 				<table>
 					<thead>
 						<tr>
@@ -89,14 +89,14 @@ const DrsRequestTemplateScene = (props) => {
 							</tr>
 						</thead>
 					<tbody>
-						{selectedIssuers.map(issuer =>
-							<tr key={issuer.id}>
-								<td>{issuer.name}</td>
-								<td>{issuer.ticker}</td>
-								<td>{issuer.cusip}</td>
-								<td>{(transferAgents[issuer.transferAgentId]||O).name}</td>
-								<td>{issuer.transferAgentId || ""}</td>
-								<td>{(transferAgents[issuer.transferAgentId]||O).address}</td>
+						{selectedSecurities.map(security =>
+							<tr key={security.id}>
+								<td>{security.ticker}</td>
+								<td>{security.cusip}</td>
+								<td>{security.issuerName}</td>
+								<td>{(transferAgents[security.transferAgentId]||O).name}</td>
+								<td>{security.transferAgentId || ""}</td>
+								<td>{(transferAgents[security.transferAgentId]||O).address}</td>
 								</tr>
 							)}
 						</tbody>
@@ -105,13 +105,13 @@ const DrsRequestTemplateScene = (props) => {
 		</Stack>
 
 
-	function* loadIssuers(onCancel){
-		const rawResponse = yield fetch('/issuers.json',canceller(onCancel))
-		const issuers = yield rawResponse.json()
-		const issuerOptions = Object.values(issuers)
-			.map(i=>({id:i.id, label:`[${i.id.toUpperCase()}] ${i.name}`}))
-		setIssuers(issuers)
-		setIssuerOptions(issuerOptions)
+	function* loadSecurities(onCancel){
+		const rawResponse = yield fetch('/securities.json',canceller(onCancel))
+		const securities = yield rawResponse.json()
+		const securitiesOptions = Object.values(securities)
+			.map(s=>({id:s.id, label:`[${s.ticker.toUpperCase()}] ${s.issuerName}`}))
+		setSecurities(securities)
+		setSecuritiesOptions(securitiesOptions)
 		}
 	function* loadBrokers(onCancel){
 		const rawResponse = yield fetch('/brokers.json',canceller(onCancel))
@@ -147,14 +147,14 @@ const DrsRequestTemplateScene = (props) => {
 			[selectedBroker.id]: broker
 			})
 		}
-	function* loadIssuerDetails(onCancel){
+	function* loadSecurityDetails(onCancel){
 		//const requests = []
-		for(let option of selectedIssuerOptions){
-			let issuer = issuers[option.id]
-			if(issuer.details){
+		for(let option of selectedSecuritiesOptions){
+			let security = securities[option.id]
+			if(security.details){
 				continue
 				}
-			const request =	fetchDetails(issuer)
+			const request =	fetchDetails(security)
 			//requests.push(request)
 			}
 		//if(requests.length){setLoading("loading")}
@@ -162,15 +162,16 @@ const DrsRequestTemplateScene = (props) => {
 		//setLoading("done")
 		return
 
-		async function fetchDetails(issuer){
-			const issuerDetails = await fetch(`/issuers/drs-request/${issuer.id}.json`)
+		async function fetchDetails(security){
+			const securityDetails = await fetch(`/securities/${security.id}.json`)
 				.then(r=>r.json())
 				.catch(e=>({details:"error"}))
-			setIssuers({
-				...issuers,
-				[issuer.id]:{...issuer, details:"ok", ...issuerDetails}
+			setSecurities({
+				...security,
+				[security.id]:{...security, details:"ok", ...securityDetails}
 				})
-			const transferAgentId = issuerDetails.transferAgentId
+			//TODO: This is needlessly complicated. There are only a handful of TA's, they should just be eagerly loaded ahead of time
+			const transferAgentId = securityDetails.transferAgentId
 			if(!transferAgentId){
 				return
 				}
