@@ -97,11 +97,6 @@ WITH
 -- 			THEN ERROR('Non-unique violation: nasdaq.CUSIP; cik:' || pk2_cik || ', ticker:' || pk2_ticker)
 -- 			ELSE MIN(nasdaq.CUSIP)
 -- 			END as cusip,
--- 		CASE WHEN MIN(nasdaq.Issue_Name) <> MAX(nasdaq.Issue_Name)
--- 			THEN ERROR('Non-unique violation: nasdaq.issue_name; cik:' || pk2_cik || ', ticker:' || pk2_ticker)
--- 			ELSE MIN(nasdaq.Issue_Name)
--- 			END as name,
--- 			nasdaq.Symbol as pk2_ticker,
 -- 		CASE WHEN MIN(nasdaq.Description) <> MAX(nasdaq.Description)
 -- 			THEN ERROR('Non-unique violation: nasdaq.Description; cik:' || pk2_cik || ', ticker:' || pk2_ticker)
 -- 			ELSE MIN(nasdaq.Description)
@@ -127,20 +122,51 @@ WITH
 -- 		GROUP BY 1,2
 -- 	)
 --, security_nyse as (
-	SELECT
-		security_sec.pk2_cik,
-		security_sec.pk2_ticker,
-		CASE WHEN MIN(nyse.CUSIP) <> MAX(nyse.CUSIP)
-			THEN ERROR('Non-unique violation: nyse.CUSIP; cik:' || pk2_cik || ', ticker:' || pk2_ticker)
-			ELSE MIN(nyse.CUSIP)
-			END as cusip,
-		CASE WHEN MIN(nasdaq.Security_Name) <> MAX(nasdaq.Security_Name)
-			THEN ERROR('Non-unique violation: nasdaq.Security_Name; cik:' || pk2_cik || ', ticker:' || pk2_ticker)
-			ELSE MIN(nasdaq.Security_Name)
-			END as description,
-	FROM as nyse
-	INNER JOIN security_sec
-		ON  security_sec.exchange = "NYSE"
-		AND security_sec.pk2_ticker = nasdaq.Stock_Symbol
-		AND stringOverlap(security_sec.issuerName, nyse.Issuer_Name) > 25
+	-- SELECT
+	-- 	security_sec.pk2_cik,
+	-- 	security_sec.pk2_ticker,
+	-- 	CASE WHEN MIN(nyse.CUSIP) <> MAX(nyse.CUSIP)
+	-- 		THEN ERROR('Non-unique violation: nyse.CUSIP; cik:' || pk2_cik || ', ticker:' || pk2_ticker)
+	-- 		ELSE MIN(nyse.CUSIP)
+	-- 		END as cusip,
+	-- 	CASE WHEN MIN(nyse.Security_Name) <> MAX(nyse.Security_Name)
+	-- 		THEN ERROR('Non-unique violation: nyse.Security_Name; cik:' || pk2_cik || ', ticker:' || pk2_ticker)
+	-- 		ELSE MIN(nyse.Security_Name)
+	-- 		END as description,
+	-- FROM `apes-on-parade-default.src_unlicensed.nyse_securities` as nyse
+	-- INNER JOIN security_sec
+	-- 	ON  security_sec.exchange = "NYSE"
+	-- 	AND security_sec.pk2_ticker = nyse.Stock_Symbol
+	-- 	AND stringOverlap(security_sec.issuerName, nyse.Issuer_Name) > 25
+	-- GROUP BY 1,2
 --)
+	, claimed_transfer_agents as (
+		SELECT
+			unioned.pk2_cik,
+			unioned.pk2_ticker,
+			ARRAY_AGG(unioned.transferAgent) as claimedTransferAgents,
+			--CASE WHEN MIN=MAX THEN MIN(dtcMemberId)
+		FROM (
+			SELECT pk2_cik, pk2_ticker, UNNEST(claimedTransferAgents) as transferAgent FROM security_nasdaq
+			UNION ALL
+			SELECT pk2_cik, pk2_ticker, transferAgent FROM security_gorillionaire
+			-- UNION ALL
+			-- FROM issuer_14a...
+		) as unioned
+		ORDER BY unioned.transferAgent.asOfDate DESC
+		)
+SELECT
+	security_sec.pk2_cik,
+	security_sec.pk2_ticker,
+	security_sec.exchange,
+	COALESCE(security_nyse.cusip, security_nasdaq.cusip) as cusip,
+	COALESCE(security_nyse.description, security_nasdaq.description) as description,
+
+
+FROM security_sec
+LEFT JOIN security_nyse
+	ON security_nyse.pk2_cik = security_sec.pk2_cik
+	AND security_nyse.pk2_ticker = security_sec.pk2_ticker
+LEFT JOIN security_nasdaq
+	ON security_nasdaq.pk2_cik = security_sec.pk2_cik
+	AND security_nasdaq.pk2_ticker = security_sec.pk2_ticker
