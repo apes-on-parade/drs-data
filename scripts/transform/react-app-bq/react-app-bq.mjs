@@ -15,7 +15,7 @@ async function main() {
 	const queries = [
 		{id:"issuersIndex",		sql:read("issuers-index.sql"),		output: outputIndex("/react-app/dev-data/data/issuers.json")},
 		{id:"issuersDetail",	sql:read("issuers-detail.sql"),		output: outputFiles("/react-app/dev-data/data/issuers")},
-		//{id:"brokersIndex",	sql:read("brokers-index.sql"),		output: outputIndex("/react-app/dev-data/data/brokers.json")},
+		{id:"brokersIndex",		sql:read("brokers-index.sql"),		output: outputIndex("/react-app/dev-data/data/brokers.json")},
 		{id:"brokersDetail",	sql:read("brokers-detail.sql"),		output: outputFiles("/react-app/dev-data/data/brokers")},
 		{id:"transferAgents",	sql:read("transfer-agents.sql"),	output: outputIndex("/react-app/dev-data/data/transfer-agents.json")},
 		{id:"securitiesIndex",	sql:read("securities-index.sql"),	output: outputIndex("/react-app/dev-data/data/securities.json")},
