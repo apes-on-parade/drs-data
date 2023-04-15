@@ -7,6 +7,7 @@ SELECT
   STRUCT(
     CAST(Direct_DRS_available_ AS BOOLEAN) as hasDirect,
     CAST(Letter_of_instruction_ AS BOOLEAN) as doesRequireLoi,
+    LOI_options as loiOptions,
     CAST(CS___Required_ AS BOOLEAN) as doesRequireAccount,
     CASE CS_Account__Number_Mentioned_
       WHEN "Demands Acc # Disclaimer" THEN TRUE
@@ -14,23 +15,11 @@ SELECT
       WHEN "No" THEN FALSE
       ELSE null
       END as doesRequestAccount,
-    CASE Reseller_or_Saxo_
-      WHEN "Yes" THEN TRUE
-      WHEN "No" THEN FALSE
-      END as isExpensiveDrs,
+    Is_Excessively_Expensive_ as isExpensive,
     Notes as note,
-    CASE Transfer_to_IBKR
-      WHEN "Yes" THEN TRUE
-      WHEN "No" THEN FALSE
-      END as transferToIbkr,
-    CASE Transfer_to_another_broker
-      WHEN "Yes" THEN TRUE
-      WHEN "No" THEN FALSE
-      END as transferToOther,
-    CASE Cannot_transfer
-      WHEN "Yes" THEN TRUE
-      WHEN "No" THEN FALSE
-      END as transferUnavailable,
+    Transfer_to_IBKR as transferToIbkr,
+    Transfer_to_another_broker as transferToOther,
+    Cannot_transfer as transferUnavailable,
     Expected_Fee as expectedFee,
     Duration as expectedDuration
   ) as drs,

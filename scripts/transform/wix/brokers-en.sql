@@ -34,7 +34,7 @@ CREATE TEMP FUNCTION enSummaryParagraph(
         }
       }
     }
-    return `<p class="font_8">para</p>`;
+    return `<p class="font_8">${para}</p>`;
 
     function drs(){para+=`${name} is able to directly DRS shares upon your request.`+(expectedDuration ? `Expect the request to take ${expectedDuration} to process. `:"")+`See our broker-specific guide below for instructions.`}
     function usTransfer(){para += `${name} cannot DRS transfer, but can transfer to other brokers. To DRS, you will first need to transfer to a broker that can DRS, for example Fidelity. See our <a href="#">Fidelity Route Guide</a>.`}
