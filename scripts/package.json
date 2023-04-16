@@ -9,6 +9,7 @@
   "author": "",
   "license": "UNLICENSED",
   "dependencies": {
+    "@google-cloud/bigquery": "^6.2.0",
     "cheerio": "^1.0.0-rc.12",
     "csv": "^6.2.5",
     "node-fetch-cache": "^3.1.1"
