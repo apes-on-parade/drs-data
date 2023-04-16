@@ -13,13 +13,14 @@ async function main() {
 	const cliArgs = process.argv.filter((x,i) => i>=2 || !x.match(/node$|\.mjs$/))
 
 	const queries = [
+		// {id:"issuersDetail",	src:"issuers-detail.sql",		output: outputFiles("/react-app/dev-data/data/issuers/")},
+		// {id:"securitiesIndex",		src:"securities-index.sql",			output: outputIndex("/react-app/dev-data/data/securities.json")},
+		// {id:"securitiesDetailDrs",	src:"securities-detail-drs.sql",	output: outputFiles("/react-app/dev-data/data/securities/drs/")},
+		{id:"brokersIndex",			src:"brokers-index.sql",			output: outputIndex("/react-app/dev-data/data/brokers.json")},
+		{id:"brokersDetailDrs",		src:"brokers-detail-drs.sql",		output: outputFiles("/react-app/dev-data/data/brokers/")},
+
 		//{id:"issuersIndex",		src:"issuers-index.sql",		output: outputIndex("/react-app/dev-data/data/issuers.json")},
-		{id:"issuersDetail",	src:"issuers-detail.sql",		output: outputFiles("/react-app/dev-data/data/issuers/")},
-		//{id:"brokersIndex",		src:"brokers-index.sql",		output: outputIndex("/react-app/dev-data/data/brokers.json")},
-		// {id:"brokersDetail",	src:"brokers-detail.sql",		output: outputFiles("/react-app/dev-data/data/brokers/")},
 		// {id:"transferAgents",	src:"transfer-agents.sql",	output: outputIndex("/react-app/dev-data/data/transfer-agents.json")},
-		// {id:"securitiesIndex",	src:"securities-index.sql",	output: outputIndex("/react-app/dev-data/data/securities.json")},
-		// {id:"securitiesDetail",	src:"securities-detail.sql"),	output: outputFiles("/react-app/dev-data/data/securities/")},
 		]
 
 	const dryRun = cliArgs.length === 0
@@ -33,14 +34,14 @@ async function main() {
 			continue
 			}
 		const sql = await read(query.src)
-		console.log(`	SQL query loaded`)
+		//console.log(`	SQL query loaded`)
 		const [job] = await bq.createQueryJob({
 			location,
 			query: sql,
 			dryRun
 			})
-		console.log(`	Started as job ${job.id}`)
-		console.log(`	Status: ${job.metadata.status}`)
+		//console.log(`	Started as job ${job.id}`)
+		//console.log(`	Status: ${job.metadata.status}`)
 		console.log('	Bytes: ', formatMb(job.metadata.statistics.totalBytesProcessed))
 		console.log('	Cache: ', job.metadata.statistics.query.cacheHit)
 
@@ -79,10 +80,8 @@ function outputFiles(path){
 	}
 function outputIndex(path){
 	return async function(data){
-		await mkdir(
-			new URL("../../.."+path.replace(/\/[^\/]+$,""/), import.meta.url),
-			{ recursive: true }
-			)
+		const outputDir = new URL("../../.."+path.replace(/\/[^\/]+$/,""), import.meta.url)
+		await mkdir(outputDir,{ recursive: true })
 		let output = {}
 		for(let d of data){
 			let id = d.id
