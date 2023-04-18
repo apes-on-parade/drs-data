@@ -41,10 +41,13 @@ module.exports = {
 			}),
 		new webpack.HotModuleReplacementPlugin(),
 		],
-	devServer: {
+	devServer: { //Doesn't seem to be working/respected
 		port: 8080,
 		hot: true,
-		static: ['./dev-data'],
-		historyApiFallback: true
+		historyApiFallback: true,
+		static: {
+			directory: './dev-data',
+			watch: false
+			}
 		},
 	}

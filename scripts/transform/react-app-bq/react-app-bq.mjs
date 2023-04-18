@@ -13,27 +13,29 @@ async function main() {
 	const cliArgs = process.argv.filter((x,i) => i>=2 || !x.match(/node$|\.mjs$/))
 
 	const queries = [
-		// {id:"issuersDetail",	src:"issuers-detail.sql",		output: outputFiles("/react-app/dev-data/data/issuers/")},
-		// {id:"securitiesIndex",		src:"securities-index.sql",			output: outputIndex("/react-app/dev-data/data/securities.json")},
-		// {id:"securitiesDetailDrs",	src:"securities-detail-drs.sql",	output: outputFiles("/react-app/dev-data/data/securities/drs/")},
-		{id:"brokersIndex",			src:"brokers-index.sql",			output: outputIndex("/react-app/dev-data/data/brokers.json")},
-		{id:"brokersDetailDrs",		src:"brokers-detail-drs.sql",		output: outputFiles("/react-app/dev-data/data/brokers/")},
-
-		//{id:"issuersIndex",		src:"issuers-index.sql",		output: outputIndex("/react-app/dev-data/data/issuers.json")},
-		// {id:"transferAgents",	src:"transfer-agents.sql",	output: outputIndex("/react-app/dev-data/data/transfer-agents.json")},
+		{id:"issuers-index.sql",		output: outputIndex("/react-app/dev-data/data/issuers.json")},
+		{id:"issuers-detail.sql",		output: outputFiles("/react-app/dev-data/data/issuers/")},
+		{id:"securities-index.sql",		output: outputIndex("/react-app/dev-data/data/securities.json")},
+		{id:"securities-detail-drs.sql",output: outputFiles("/react-app/dev-data/data/securities/drs/")},
+		{id:"brokers-index.sql",		output: outputIndex("/react-app/dev-data/data/brokers.json")},
+		{id:"brokers-detail-drs.sql",	output: outputFiles("/react-app/dev-data/data/brokers/")},
+		{id:"transfer-agents.sql",		output: outputIndex("/react-app/dev-data/data/transfer-agents.json")},
 		]
 
 	const dryRun = cliArgs.length === 0
+	const log = {}
 	console.log(`Dry run: ${dryRun}`)
 
 	for(let query of queries){
-		console.log(`\nQuery: ${query.id}\n####################`)
+		const {id} = query
+		const src = query.src ?? query.id
+		console.log(`Query: ${id}`)
 		const isSelected = cliArgs.includes(query.id)
 		if(!dryRun && !isSelected){
 			console.log(`	Skipping`)
 			continue
 			}
-		const sql = await read(query.src)
+		const sql = await read(src)
 		//console.log(`	SQL query loaded`)
 		const [job] = await bq.createQueryJob({
 			location,
@@ -42,9 +44,9 @@ async function main() {
 			})
 		//console.log(`	Started as job ${job.id}`)
 		//console.log(`	Status: ${job.metadata.status}`)
-		console.log('	Bytes: ', formatMb(job.metadata.statistics.totalBytesProcessed))
-		console.log('	Cache: ', job.metadata.statistics.query.cacheHit)
-
+		const bytes = formatMb(job.metadata.statistics.totalBytesProcessed)
+		const cache = job.metadata.statistics.query.cacheHit
+		log[id]={bytes, cache}
 		if(!dryRun){
 			const [rows] = await job.getQueryResults()
 			console.log(`	Received: ${rows.length} rows`)
@@ -52,19 +54,20 @@ async function main() {
 			console.log(`	Output complete`)
 			}
 		}
+	console.table(log)
 	return
-
-}
+	}
 
 async function read(file){
 	return await readFile(new URL(file,import.meta.url), 'utf8')
 	}
 function outputFiles(path){
 	return async function(data){
-		await mkdir(
-			new URL("../../.."+path, import.meta.url),
-			{ recursive: true }
-			)
+		const folder = new URL("../../.."+path, import.meta.url)
+		try{ //How to appropriately guard this to not accidentally delete stuff? (at least I'm running on a VM...)
+			await rm(folder, { recursive: true, force: true })
+			}catch(e){}
+		await mkdir(folder,{ recursive: true })
 		for(let d of data){
 			let id = d.id
 			if(id === undefined){
@@ -79,19 +82,23 @@ function outputFiles(path){
 		}
 	}
 function outputIndex(path){
+	const fileLocation = new URL(`../../..${path}`, import.meta.url)
 	return async function(data){
 		const outputDir = new URL("../../.."+path.replace(/\/[^\/]+$/,""), import.meta.url)
 		await mkdir(outputDir,{ recursive: true })
-		let output = {}
-		for(let d of data){
-			let id = d.id
-			if(id === undefined){
-				throw "`id` field is required"
-				}
-			output[id] = d
-			}
+		//try{await rm(fileLocation)}catch(e){}
+		const output = data
+		// Used to output a hash instead of an array
+		// let output = {}
+		// for(let d of data){
+		// 	let id = d.id
+		// 	if(id === undefined){
+		// 		throw "`id` field is required"
+		// 		}
+		// 	output[id] = d
+		// 	}
 		await writeFile(
-			new URL(`../../..${path}`, import.meta.url),
+			fileLocation,
 			JSON.stringify(output),
 			{encoding:"utf8"}
 			)

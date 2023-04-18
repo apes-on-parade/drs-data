@@ -37,36 +37,14 @@ WITH
 		CASE WHEN MIN(spreadsheet.companyName) <> MAX(spreadsheet.companyName)
 			THEN NULL
 			ELSE MIN(spreadsheet.companyName)
-			END as name,
-		STRUCT(
-			CASE WHEN MIN(spreadsheet.dtcMemberId) <> MAX(spreadsheet.dtcMemberId)
-			THEN NULL
-			ELSE MIN(spreadsheet.dtcMemberId)
-			END as dtcMemberId,
-			CASE WHEN MIN(spreadsheet.transferAgent) <> MAX(spreadsheet.transferAgent)
-			THEN NULL
-			ELSE MIN(spreadsheet.transferAgent)
 			END as name
-		) as transferAgent,
-		ARRAY_AGG(STRUCT(
-			spreadsheet.exchange,
-			spreadsheet.stockSymbol as ticker,
-			spreadsheet.cusip,
-			spreadsheet.hasOnlinePurchase
-		)) as tickers
 		FROM `apes-on-parade-default.drs_data.gorillionaire_tickers` as spreadsheet
-		INNER JOIN `apes-on-parade-default.src_public.sec_cik_tickers` as official
-			ON  official.cik = spreadsheet.cik
-			AND official.exchange = spreadsheet.exchange
-			AND official.ticker = spreadsheet.stockSymbol
 		WHERE spreadsheet.cik IS NOT NULL
-			AND (spreadsheet.exchange = "NYSE" OR spreadsheet.exchange="Nasdaq")
 		GROUP BY 1
 		)
 SELECT
-	cik_sec.cik,
+	cik_sec.cik as pk1_cik,
 	COALESCE(cik_gorillionaire.name, cik_sec.name) as name,
-	cik_gorillionaire.tickers,
 	STRUCT(
 		holders.filingDate,
 		holders.totalHolders,

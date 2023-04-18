@@ -182,6 +182,7 @@ SELECT
 	security_sec.exchange,
 	COALESCE(security_nyse.cusip, security_nasdaq.cusip,security_gorillionaire.cusip) as cusip,
 	COALESCE(security_nyse.description, security_nasdaq.description) as description,
+	security_gorillionaire.hasOnlinePurchase,
 	ta.claimedTransferAgents[OFFSET(0)] as latestClaimedTransferAgent,
 	ta.claimedTransferAgents as allClaimedTransferAgents
 FROM security_sec

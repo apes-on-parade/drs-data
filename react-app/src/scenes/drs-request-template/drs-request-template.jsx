@@ -34,10 +34,10 @@ const DrsRequestTemplateScene = (props) => {
 	useAsyncEffect(loadSecurities,[])
 	useAsyncEffect(loadBrokers,[])
 	useAsyncEffect(loadBrokerDetails,[selectedBrokerOption])
-	useAsyncEffect(loadSecurityDetails,[selectedSecurityOptions])
+	useAsyncEffect(loadSecurityDetails,[selectedSecuritiesOptions])
 
 	const broker = selectedBrokerOption && brokers[selectedBrokerOption.id]
-	const selectedSecurities = selectedSecurititesOptions.map(option=>securities[option.id])
+	const selectedSecurities = selectedSecuritiesOptions.map(option=>securities[option.id])
 
 	return <Stack direction="column" spacing={4} className="project-page">
 			<Typography style={{textAlign:"center"}}>This form can help you prepare your DRS request. We do not collect or process information entered here, nor submit the request on your behalf.</Typography>
@@ -61,7 +61,7 @@ const DrsRequestTemplateScene = (props) => {
 				options={securitiesOptions}
 				getOptionLabel={(option) => option.label}
 				value={selectedSecuritiesOptions}
-				onChange={(evt,val)=>setSelectedSecurititesOptions(val)}
+				onChange={(evt,val)=>setSelectedSecuritiesOptions(val)}
 				renderInput={(params) => (
 					<TextField
 						{...params}
@@ -71,7 +71,7 @@ const DrsRequestTemplateScene = (props) => {
 					)}
 				/>
 			<hr />
-			{broker && broker.drsAvailable===undefined && <Typography>{l`Loading broker details...`}</Typography>}
+			{broker && broker.drs===undefined && <Typography>{l`Loading broker details...`}</Typography>}
 			{broker && broker.drsAvailable===false && <Typography>{l`Your broker does not handle DRS requests directly. However, there are still a few options you can use to register your shares`}</Typography>}
 			{broker && broker.drsAvailable===true && <>
 				<Typography>{l`Good news! Your broker does handle DRS requests!`}</Typography>
@@ -106,18 +106,18 @@ const DrsRequestTemplateScene = (props) => {
 
 
 	function* loadSecurities(onCancel){
-		const rawResponse = yield fetch('/securities.json',canceller(onCancel))
-		const securities = yield rawResponse.json()
-		const securitiesOptions = Object.values(securities)
-			.map(s=>({id:s.id, label:`[${s.ticker.toUpperCase()}] ${s.issuerName}`}))
+		const rawResponse = yield fetch('/data/securities.json',canceller(onCancel))
+		const securitiesArr = yield rawResponse.json()
+		const securitiesOptions = securitiesArr.map(s => ({id:s.id, label:`[${s.ticker.toUpperCase()}] ${s.issuer}`}))
+		const securities = arrayToHash(securitiesArr)
 		setSecurities(securities)
 		setSecuritiesOptions(securitiesOptions)
 		}
 	function* loadBrokers(onCancel){
-		const rawResponse = yield fetch('/brokers.json',canceller(onCancel))
-		const brokers = yield rawResponse.json()
-		const brokerOptions = Object.values(brokers)
-			.map(b=>({id:b.id, label:b.name}))
+		const rawResponse = yield fetch('/data/brokers.json',canceller(onCancel))
+		const brokersArr = yield rawResponse.json()
+		const brokerOptions = brokersArr.map(b => ({id:b.id, label:b.name}))
+		const brokers = arrayToHash(brokersArr)
 		setBrokers(brokers)
 		setBrokerOptions(brokerOptions)
 		}
@@ -140,8 +140,9 @@ const DrsRequestTemplateScene = (props) => {
 		if(selectedBroker.drsAvailable !== undefined){
 			return
 			}
-		const rawResponse = yield fetch(`/brokers/drs-request/${selectedBroker.id}.json`,canceller(onCancel))
+		const rawResponse = yield fetch(`/data/brokers/${selectedBroker.id}.json`,canceller(onCancel))
 		const broker = yield rawResponse.json()
+		debugger
 		setBrokers({
 			...brokers,
 			[selectedBroker.id]: broker
@@ -163,7 +164,7 @@ const DrsRequestTemplateScene = (props) => {
 		return
 
 		async function fetchDetails(security){
-			const securityDetails = await fetch(`/securities/${security.id}.json`)
+			const securityDetails = await fetch(`/data/securities/drs/${security.id}.json`)
 				.then(r=>r.json())
 				.catch(e=>({details:"error"}))
 			setSecurities({
@@ -175,7 +176,6 @@ const DrsRequestTemplateScene = (props) => {
 			if(!transferAgentId){
 				return
 				}
-			debugger;
 			const transferAgent = transferAgents[transferAgentId] || O
 			if(transferAgent.details){
 				return
@@ -195,6 +195,13 @@ function canceller(onCancel){
 	const controller = new AbortController();
 	onCancel(() => controller.abort())
 	return controller
+	}
+function arrayToHash(arr, id="id"){
+	let obj = {}
+	for( let x of arr){
+		obj[x[id]] = x
+		}
+	return obj
 	}
 
 export default DrsRequestTemplateScene
