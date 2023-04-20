@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react'
 import {useParams} from 'react-router-dom'
 //import {useDebounce} from 'use-debounce'
 import useAsyncEffect from "@n1ru4l/use-async-effect"
+import defaultTranslation from "../../common/default-translation.mjs"
+import BrokerDrsSummary from "../../common/components/broker-drs-summary/broker-drs-summary.jsx"
 
 //import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -16,7 +18,7 @@ const O = {}
 const DrsRequestTemplateScene = (props) => {
 	//Localization
 	const {locale='en'} = useParams('locale')
-	const [l,setLocalization] = useState(()=>()=>"...")
+	const [l,setLocalization] = useState(defaultTranslation)
 	useAsyncEffect(loadLocalization,[locale])
 
 	//Core state
@@ -71,11 +73,15 @@ const DrsRequestTemplateScene = (props) => {
 					)}
 				/>
 			<hr />
-			{broker && broker.drs===undefined && <Typography>{l`Loading broker details...`}</Typography>}
-			{broker && broker.drsAvailable===false && <Typography>{l`Your broker does not handle DRS requests directly. However, there are still a few options you can use to register your shares`}</Typography>}
+			{broker && (
+				broker.drs===undefined
+					? <Typography>{l`Loading broker details...`}</Typography>
+					: <BrokerDrsSummary broker={broker} />
+				)}
+			{/*broker && broker.drsAvailable===false && <Typography>{l`Your broker does not handle DRS requests directly. However, there are still a few options you can use to register your shares`}</Typography>}
 			{broker && broker.drsAvailable===true && <>
 				<Typography>{l`Good news! Your broker does handle DRS requests!`}</Typography>
-				</>}
+				</> */}
 			{selectedSecurities.length>0 &&
 				<table>
 					<thead>
@@ -142,7 +148,6 @@ const DrsRequestTemplateScene = (props) => {
 			}
 		const rawResponse = yield fetch(`/data/brokers/${selectedBroker.id}.json`,canceller(onCancel))
 		const broker = yield rawResponse.json()
-		debugger
 		setBrokers({
 			...brokers,
 			[selectedBroker.id]: broker
