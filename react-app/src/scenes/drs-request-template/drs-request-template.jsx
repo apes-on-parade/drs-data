@@ -4,6 +4,7 @@ import {useParams} from 'react-router-dom'
 import useAsyncEffect from "@n1ru4l/use-async-effect"
 import defaultTranslation from "../../common/default-translation.mjs"
 import BrokerDrsSummary from "../../common/components/broker-drs-summary/broker-drs-summary.jsx"
+//import SecurityDrsGuide from "../../common/components/broker-drs-summary/security-drs-guide.jsx"
 
 //import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -22,17 +23,16 @@ const DrsRequestTemplateScene = (props) => {
 	useAsyncEffect(loadLocalization,[locale])
 
 	//Core state
-	const [securities, setSecurities] = useState()
 	const [brokers, setBrokers] = useState()
-	const [securitiesOptions, setSecuritiesOptions] = useState([])
 	const [brokerOptions, setBrokerOptions] = useState([])
-	const [selectedSecuritiesOptions, setSelectedSecuritiesOptions] = useState([])
 	const [selectedBrokerOption,  setSelectedBrokerOption] = useState(null)
-	const [transferAgents, setTransferAgents] = useState({})
-
+	const [securities, setSecurities] = useState()
+	const [securitiesOptions, setSecuritiesOptions] = useState([])
+	const [selectedSecuritiesOptions, setSelectedSecuritiesOptions] = useState([])
+	//const [transferAgents, setTransferAgents] = useState({})
 	//const [accountInfoOptions] = useState(["Standard", "401(k)", "IRA", "Other retirement"])
 
-
+	// Effects
 	useAsyncEffect(loadSecurities,[])
 	useAsyncEffect(loadBrokers,[])
 	useAsyncEffect(loadBrokerDetails,[selectedBrokerOption])
@@ -40,7 +40,7 @@ const DrsRequestTemplateScene = (props) => {
 
 	const broker = selectedBrokerOption && brokers[selectedBrokerOption.id]
 	const selectedSecurities = selectedSecuritiesOptions.map(option=>securities[option.id])
-
+	console.log(selectedSecurities)
 	return <Stack direction="column" spacing={4} className="project-page">
 			<Typography style={{textAlign:"center"}}>This form can help you prepare your DRS request. We do not collect or process information entered here, nor submit the request on your behalf.</Typography>
 			<Stack direction="row" spacing={1}>
@@ -58,6 +58,11 @@ const DrsRequestTemplateScene = (props) => {
 					renderInput={(params) => <TextField {...params} label="Account Type" placeholder="(Optional) Whether your account is a 401(k), IRA, etc." />}
 					/>*/}
 				</Stack>
+			{broker && (
+				broker.drs===undefined
+					? <Typography>{l`Loading broker details...`}</Typography>
+					: <BrokerDrsSummary broker={broker} />
+				)}
 			<Autocomplete
 				multiple filterSelectedOptions
 				options={securitiesOptions}
@@ -65,7 +70,7 @@ const DrsRequestTemplateScene = (props) => {
 				value={selectedSecuritiesOptions}
 				onChange={(evt,val)=>setSelectedSecuritiesOptions(val)}
 				renderInput={(params) => (
-					<TextField
+					console.log({params}),<TextField
 						{...params}
 						label="Securities"
 						placeholder="Securities (stocks/tickers) to DRS"
@@ -73,41 +78,30 @@ const DrsRequestTemplateScene = (props) => {
 					)}
 				/>
 			<hr />
-			{broker && (
-				broker.drs===undefined
-					? <Typography>{l`Loading broker details...`}</Typography>
-					: <BrokerDrsSummary broker={broker} />
-				)}
 			{/*broker && broker.drsAvailable===false && <Typography>{l`Your broker does not handle DRS requests directly. However, there are still a few options you can use to register your shares`}</Typography>}
 			{broker && broker.drsAvailable===true && <>
 				<Typography>{l`Good news! Your broker does handle DRS requests!`}</Typography>
 				</> */}
-			{selectedSecurities.length>0 &&
+			{/*selectedSecurities.length>0 &&
 				<table>
 					<thead>
 						<tr>
-							<th>Issuer</th>
 							<th>Ticker</th>
 							<th>CUSIP</th>
-							<th>Transfer Agent</th>
-							<th>Transfer Agent <br />DTC Member ID</th>
-							<th>Transfer Agent <br />Address</th>
+							<th>Issuer</th>
 							</tr>
 						</thead>
 					<tbody>
-						{selectedSecurities.map(security =>
-							<tr key={security.id}>
-								<td>{security.ticker}</td>
-								<td>{security.cusip}</td>
+						{selectedSecurities?.map(([security,s]) =>
+							<tr key={security?.id || console.log({s,security}),1}>
+								<td>{security?.ticker}</td>
+								<td>{security?.cusip}</td>
 								<td>{security.issuerName}</td>
-								<td>{(transferAgents[security.transferAgentId]||O).name}</td>
-								<td>{security.transferAgentId || ""}</td>
-								<td>{(transferAgents[security.transferAgentId]||O).address}</td>
 								</tr>
 							)}
 						</tbody>
 					</table>
-				}
+				*/}
 		</Stack>
 
 
@@ -170,30 +164,35 @@ const DrsRequestTemplateScene = (props) => {
 
 		async function fetchDetails(security){
 			const securityDetails = await fetch(`/data/securities/drs/${security.id}.json`)
-				.then(r=>r.json())
+				.then(r=>({details:"ok", ...r.json()}))
 				.catch(e=>({details:"error"}))
+			const readyToSubmit = securityDetails.drs //TODO: fill out logic
 			setSecurities({
-				...security,
-				[security.id]:{...security, details:"ok", ...securityDetails}
+				...securities,
+				[security.id]:{
+					...security,
+					readyToSubmit,
+					...securityDetails}
 				})
 			//TODO: This is needlessly complicated. There are only a handful of TA's, they should just be eagerly loaded ahead of time
-			const transferAgentId = securityDetails.transferAgentId
-			if(!transferAgentId){
-				return
-				}
-			const transferAgent = transferAgents[transferAgentId] || O
-			if(transferAgent.details){
-				return
-				}
-			const transferAgentDetails = await fetch(`/transfer-agents/drs-request/${transferAgentId}.json`)
-					.then(r=>r.json())
-					.catch(e=>({details:"error"}))
-			setTransferAgents({
-				...transferAgents,
-				[transferAgentId]:{...transferAgent, details:"ok", ...transferAgentDetails}
-				})
+			// const transferAgentId = securityDetails.transferAgentId
+			// if(!transferAgentId){
+			// 	return
+			// 	}
+			// const transferAgent = transferAgents[transferAgentId] || O
+			// if(transferAgent.details){
+			// 	return
+			// 	}
+			// const transferAgentDetails = await fetch(`/transfer-agents/drs-request/${transferAgentId}.json`)
+			// 		.then(r=>r.json())
+			// 		.catch(e=>({details:"error"}))
+			// setTransferAgents({
+			// 	...transferAgents,
+			// 	[transferAgentId]:{...transferAgent, details:"ok", ...transferAgentDetails}
+			// 	})
 			}
 		}
+
 	}
 
 function canceller(onCancel){

@@ -3,8 +3,8 @@ import {useParams} from 'react-router-dom'
 import useAsyncEffect from "@n1ru4l/use-async-effect"
 import defaultTranslation from "../../default-translation.mjs"
 
-//import Button from '@mui/material/Button'
-// import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import Stack from '@mui/material/Stack'
 // import Autocomplete from '@mui/material/Autocomplete'
 // import Select from '@mui/material/Select'
 // import MenuItem from '@mui/material/MenuItem'
@@ -57,30 +57,39 @@ const BrokerDrsSummary = function(props){
 		function drs(){return <p>
 			{l`Good news! ${name} is able to directly DRS shares upon your request. `}
 			{(expectedDuration ? l`Expect the request to take ${expectedDuration} to process. `:"")}
-			{l`See our broker-specific guide below for instructions.`}
+			{l`You can always consult our broker-specific guide for step-by-step instructions.`}
 			</p>}
-		function usTransfer(){return <p>
-			{l`${name} cannot DRS transfer, but can transfer to other brokers. To DRS, you will first need to transfer to a broker that can DRS, for example Fidelity. See our ${<a href="#">{l`Fidelity Route Guide`}</a>}. `}
-			</p>}
-		function usRepurchase(){return <p>
-			{l`${name} cannot DRS transfer, and cannot transfer to other brokers. To DRS, you will need to close out your position and rebuy with a DRS-capable broker or the transfer agent directly. See our ${<a href="#">{l`U.S. Sell+Repurchase Guide`}</a>} .`}
-			</p>}
-		function nonusTransfer(){return <p>
-			l`${name} cannot DRS transfer, but can transfer to other brokers. To DRS, you will first need to transfer to a broker that can DRS, for example Interactive Brokers (IBKR). See our `
-			<a href="#">l`IBKR Route Guide`</a>.
-			</p>}
-		function nonusExpensive(){return <p>
-			l`${name} can DRS transfer, but charges an excessive fee to do so (${expectedFee}). Although you may DRS directly from this broker, we instead recommend first transfering to a broker that can DRS for a reasonable cost, for example Interactive Brokers (IBKR). See our `
-			<a href="#">l`IBKR Route Guide`</a>.
-			</p>}
-		function nonusPreexisting(){return <p>
-			l`This broker requires a pre-existing account at the transfer agent. See our `
-			<a href="#">l`Creating an Initial Account Guide`</a>.
-			</p>}
-		function nonusRepurchase(){return <p>
-			l`${name} cannot DRS transfer, and cannot transfer to other brokers. To DRS, you will need to close out your position and rebuy with a DRS broker or the transfer agent directly. See our `
-			<a href="#">l`Non-U.S. Sell+Repurchase Guide`</a>.
-			</p>}
+		function usTransfer(){return <>
+			<p>{l`${name} cannot DRS transfer, but can transfer to other brokers. To DRS, you will first need to transfer to a broker that can DRS, for example Fidelity. See our Fidelity Route Guide`}</p>
+			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`Fidelity Route Guide`}</Button></Stack>
+			</>}
+		function usRepurchase(){return <>
+			<p>
+			{l`${name} cannot DRS transfer, and cannot transfer to other brokers. To DRS, you will need to close out your position and rebuy with a DRS-capable broker or the transfer agent directly.`}
+			</p>
+			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`U.S. Sell+Repurchase Guide`}</Button></Stack>
+			</>}
+		function nonusTransfer(){return <>
+			<p>
+			{l`${name} cannot DRS transfer, but can transfer to other brokers. To DRS, you will first need to transfer to a broker that can DRS, for example Interactive Brokers (IBKR).`}
+			</p>
+			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`IBKR Route Guide`}</Button></Stack>
+			</>}
+		function nonusExpensive(){return <>
+			<p>
+			{l`${name} can DRS transfer, but charges an excessive fee to do so (${expectedFee}). Although you may DRS directly from this broker, we instead recommend first transfering to a broker that can DRS for a reasonable cost, for example Interactive Brokers (IBKR).`}
+			</p>
+			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`IBKR Route Guide`}</Button></Stack>
+			</>}
+		function nonusPreexisting(){return <>
+			<p>{l`This broker requires a pre-existing account at the transfer agent. See our guide to creating an initial account.`}</p>
+			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`Creating an Initial Account Guide`}</Button></Stack>
+			<p>{l`You can always consult our broker-specific guide for step-by-step instructions.`}</p>
+			</>}
+		function nonusRepurchase(){return <>
+			<p>{l`${name} cannot DRS transfer, and cannot transfer to other brokers. To DRS, you will need to close out your position and rebuy with a DRS broker or the transfer agent directly.`}</p>
+			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`Non-U.S. Sell+Repurchase Guide`}</Button></Stack>.
+			</>}
 		}
 
 	function* loadLocalization(onCancel){
