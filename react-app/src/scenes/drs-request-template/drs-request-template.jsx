@@ -4,7 +4,7 @@ import {useParams} from 'react-router-dom'
 import useAsyncEffect from "@n1ru4l/use-async-effect"
 import defaultTranslation from "../../common/default-translation.mjs"
 import BrokerDrsSummary from "../../common/components/broker-drs-summary/broker-drs-summary.jsx"
-//import SecurityDrsGuide from "../../common/components/broker-drs-summary/security-drs-guide.jsx"
+import SecurityDrsGuide from "../../common/components/security-drs-guide/security-drs-guide.jsx"
 
 //import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
@@ -40,7 +40,7 @@ const DrsRequestTemplateScene = (props) => {
 
 	const broker = selectedBrokerOption && brokers[selectedBrokerOption.id]
 	const selectedSecurities = selectedSecuritiesOptions.map(option=>securities[option.id])
-	console.log(selectedSecurities)
+
 	return <Stack direction="column" spacing={4} className="project-page">
 			<Typography style={{textAlign:"center"}}>This form can help you prepare your DRS request. We do not collect or process information entered here, nor submit the request on your behalf.</Typography>
 			<Stack direction="row" spacing={1}>
@@ -70,7 +70,7 @@ const DrsRequestTemplateScene = (props) => {
 				value={selectedSecuritiesOptions}
 				onChange={(evt,val)=>setSelectedSecuritiesOptions(val)}
 				renderInput={(params) => (
-					console.log({params}),<TextField
+					<TextField
 						{...params}
 						label="Securities"
 						placeholder="Securities (stocks/tickers) to DRS"
@@ -78,30 +78,12 @@ const DrsRequestTemplateScene = (props) => {
 					)}
 				/>
 			<hr />
-			{/*broker && broker.drsAvailable===false && <Typography>{l`Your broker does not handle DRS requests directly. However, there are still a few options you can use to register your shares`}</Typography>}
-			{broker && broker.drsAvailable===true && <>
-				<Typography>{l`Good news! Your broker does handle DRS requests!`}</Typography>
-				</> */}
-			{/*selectedSecurities.length>0 &&
-				<table>
-					<thead>
-						<tr>
-							<th>Ticker</th>
-							<th>CUSIP</th>
-							<th>Issuer</th>
-							</tr>
-						</thead>
-					<tbody>
-						{selectedSecurities?.map(([security,s]) =>
-							<tr key={security?.id || console.log({s,security}),1}>
-								<td>{security?.ticker}</td>
-								<td>{security?.cusip}</td>
-								<td>{security.issuerName}</td>
-								</tr>
-							)}
-						</tbody>
-					</table>
-				*/}
+			{selectedSecurities.length>0 && <>
+				<p>...</p>
+				{selectedSecurities?.map(security =>
+					<SecurityDrsGuide key={security.id} security={security} />
+					)}
+				</>}
 		</Stack>
 
 
@@ -164,9 +146,14 @@ const DrsRequestTemplateScene = (props) => {
 
 		async function fetchDetails(security){
 			const securityDetails = await fetch(`/data/securities/drs/${security.id}.json`)
-				.then(r=>({details:"ok", ...r.json()}))
+				.then(r=>r.json()).then(d=>({details:"ok",...d}))
 				.catch(e=>({details:"error"}))
-			const readyToSubmit = securityDetails.drs //TODO: fill out logic
+
+			const readyToSubmit = !!(
+				securityDetails.latestClaimedTransferAgent
+				&& securityDetails.latestClaimedTransferAgent.dtcMemberId
+				&& securityDetails.allClaimedTransferAgents?.map(ta=>ta.dtcMemberId).filter(unique).length===1
+				)
 			setSecurities({
 				...securities,
 				[security.id]:{
@@ -207,5 +194,5 @@ function arrayToHash(arr, id="id"){
 		}
 	return obj
 	}
-
+function unique(x,i,arr){return arr.indexOf(x)===i}
 export default DrsRequestTemplateScene
