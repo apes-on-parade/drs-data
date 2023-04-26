@@ -13,6 +13,7 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
+//import WarningIcon from '@mui/icons-material/Warning'
 
 const O = {}
 
@@ -40,6 +41,7 @@ const DrsRequestTemplateScene = (props) => {
 
 	const broker = selectedBrokerOption && brokers[selectedBrokerOption.id]
 	const selectedSecurities = selectedSecuritiesOptions.map(option=>securities[option.id])
+	const attentionNeededSecurities = selectedSecurities.filter(s=>s.readyToSubmit===false).length
 
 	return <Stack direction="column" spacing={4} className="project-page">
 			<Typography style={{textAlign:"center"}}>This form can help you prepare your DRS request. We do not collect or process information entered here, nor submit the request on your behalf.</Typography>
@@ -77,9 +79,9 @@ const DrsRequestTemplateScene = (props) => {
 						/>
 					)}
 				/>
-			<hr />
 			{selectedSecurities.length>0 && <>
-				<p>...</p>
+				{attentionNeededSecurities==1 && <Typography>⚠️ {attentionNeededSecurities} security requires attention.</Typography>}
+				{attentionNeededSecurities>1 && <Typography>⚠️ {attentionNeededSecurities} securities require attention.</Typography>}
 				{selectedSecurities?.map(security =>
 					<SecurityDrsGuide key={security.id} security={security} />
 					)}

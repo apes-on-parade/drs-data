@@ -12,8 +12,11 @@ import CardContent from '@mui/material/CardContent'
 import CardActions from '@mui/material/CardActions'
 import IconButton from "@mui/material/IconButton"
 import MoreVertIcon from "@mui/icons-material/MoreVert"
+import CancelIcon from '@mui/icons-material/Cancel'
+import DoneIcon from '@mui/icons-material/Done'
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
+import Link from "@mui/material/Link"
 // import Autocomplete from '@mui/material/Autocomplete'
 // import Select from '@mui/material/Select'
 // import MenuItem from '@mui/material/MenuItem'
@@ -33,11 +36,12 @@ const SecurityDrsGuide = function(props){
 
 	//Props
 	const {security} = props
-	const {ticker, cusip, issuer, latestClaimedTransferAgent, allClaimedTransferAgents, readyToSubmit} = security
+	const {ticker, cusip, issuer, issuerId, latestClaimedTransferAgent, allClaimedTransferAgents, readyToSubmit} = security
 
 	//State
 	const [menuAnchor, setMenuAnchor] = useState()
-	// const [expanded, setExpanded] = useState(true)
+	const [editingTa, setEditingTa] = useState(false)
+	const [manualTa, setManualTa] = useState("")
 
 	const avatarColor = readyToSubmit === true ? "#006600" : readyToSubmit === false ? "#CC9900" : "#666666"
 
@@ -57,26 +61,73 @@ const SecurityDrsGuide = function(props){
 				open={!!menuAnchor}
 				onClose={closeMenu}
 				>
-				<MenuItem onClick={closeMenu}>[TODO] View issuer profile</MenuItem>
+				<MenuItem onClick={closeMenu}>
+					<Link
+						sx={{textDecoration:"none", color:"inherit"}}
+						target="_blank"
+						rel="noopener"
+						href={`/${locale}/issuers/${issuerId}`}
+						>View issuer profile</Link>
+					</MenuItem>
+				<MenuItem onClick={openTaEditor}>Edit Transfer Agent</MenuItem>
 				<MenuItem onClick={closeMenu}>[TODO] Remove from request</MenuItem>
 				</Menu>
 			<CardContent>
-				{!!(latestClaimedTransferAgent && readyToSubmit) && <>
-					<Typography gutterBottom variant="h6" component="div">
+				{!!(editingTa) && <>
+					<Typography variant="h6" component="div">
+						Select the issuer's transfer agent to include in your request
+						</Typography>
+					<Stack direction="row" spacing={4}>
+						<TextField placeholder="Transfer Agent" sx={{width:"24em"}} />
+						<Button variant="outlined"><CancelIcon/></Button>
+						<Button variant="contained"><DoneIcon/></Button>
+						</Stack>
+					</>}
+				{!!(!editingTa && readyToSubmit) && <>
+					<Typography variant="h6" component="div">
 						Send
 						<TextField variant="standard" type="number" placeholder="0" sx={{width:"3em", display:"inline-block", margin:"0 4px"}}/>
 						shares to {latestClaimedTransferAgent.name}
 						</Typography>
 					{latestClaimedTransferAgent.dtcMemberId && <Typography>DTC Member Number: {latestClaimedTransferAgent.dtcMemberId}</Typography>}
 					</>}
-				{!!(!latestClaimedTransferAgent) &&
-					<Typography>
+				{!!(!editingTa && !readyToSubmit && !latestClaimedTransferAgent) &&
+					<Typography variant="h6" component="div">
 						We do not have information on this issuer's transfer agent.
 						</Typography>
 					}
+				{!!(!editingTa && !readyToSubmit && latestClaimedTransferAgent) && <>
+					<Typography variant="h6" component="div">
+						We have found multiple conflicting sources on this issuer's transfer agent:
+						</Typography>
+						<Stack direction="row" spacing={2}>
+							{allClaimedTransferAgents.map((transferAgent,t) => <Card key={t} sx={{minWidth:"200px"}}>
+								<CardContent>
+									<Typography><b>Name:</b> {transferAgent.name}</Typography>
+									{transferAgent.dtcMemberId && <Typography><b>DTC Member Number:</b> {transferAgent.dtcMemberId}</Typography>}
+									<Typography><b>Source:</b>
+										<Link target="_blank" rel="noopener"
+											href={transferAgent.docUrl}
+											>{transferAgent.docUrl}</Link>
+										</Typography>
+									{transferAgent?.asOfDate?.value[0]==='2' && <Typography><b>Date:</b> {transferAgent.asOfDate.value}</Typography>}
+									</CardContent>
+								<CardActions>
+									<Button size="small" variant="outlined" onClick={()=>alert("TODO")}>Accept suggestion</Button>
+									</CardActions>
+								</Card>)}
+							</Stack>
+					</>}
 				</CardContent>
 			<CardActions>
-				{!readyToSubmit && <Button size="small" variant="outlined">Contact Issuer</Button>}
+				{(!editingTa && !readyToSubmit) && <>
+					<Button size="small" variant="outlined" sx={{margin:"0 5px"}}
+						href={`https://www.sec.gov/edgar/browse/?CIK=$${issuerId}`}
+						>Contact issuer</Button>
+					<Button size="small" variant="outlined" sx={{margin:"0 5px"}}
+						onClick={openTaEditor}
+						>Manually set transfer agent</Button>
+					</>}
 				</CardActions>
 		</Card>
 
@@ -92,6 +143,9 @@ const SecurityDrsGuide = function(props){
 		setLocalization(()=>localization)
 		}
 	function closeMenu(){setMenuAnchor(undefined)}
+	function openTaEditor(){
+		setEditingTa(true)
+		}
 	}
 
 export default SecurityDrsGuide
