@@ -139,7 +139,7 @@ const SecurityDrsGuide = function(props){
 				<CardActions>
 					{(!editingTa && transferAgent===null) && <>
 						<Button size="small" variant="outlined" className="noprint" sx={{margin:"0 5px"}}
-							href={`https://www.sec.gov/edgar/browse/?CIK=$${issuerId}`}
+							href={`https://www.sec.gov/edgar/browse/?CIK=${issuerId}`}
 							>Contact issuer</Button>
 						<Button size="small" variant="outlined" className="noprint" sx={{margin:"0 5px"}}
 							onClick={openTaEditor}

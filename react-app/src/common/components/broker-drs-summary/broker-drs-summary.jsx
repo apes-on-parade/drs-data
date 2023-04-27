@@ -20,7 +20,7 @@ const BrokerDrsSummary = function(props){
 	useAsyncEffect(loadLocalization,[locale])
 
 	//Props
-	const {broker} = props
+	const {broker, setDisplaySecurities} = props
 	const {name, country, drs} = broker
 	const {hasDirect,transferUnavailable,isExpensive,doesRequireAccount,expectedFee,expectedDuration} = drs
 
@@ -52,41 +52,55 @@ const BrokerDrsSummary = function(props){
 					}
 				}
 			}
-		return;
+		return
 
-		function drs(){return <Typography>
-			{l`Good news! ${name} is able to directly DRS shares upon your request. `}
-			{(expectedDuration ? l`Expect the request to take ${expectedDuration} to process. `:"")}
-			{l`You can always consult our broker-specific guide for step-by-step instructions.`}
-			</Typography>}
-		function usTransfer(){return <>
-			<Typography>{l`${name} cannot DRS transfer, but can transfer to other brokers. To DRS, you will first need to transfer to a broker that can DRS, for example Fidelity. See our Fidelity Route Guide`}</Typography>
+		function drs(){
+			setDisplaySecurities(true)
+			return <>
+			<Typography>
+				{l`Good news! ${name} is able to directly DRS shares upon your request. `}
+				{(expectedDuration ? l`Expect the request to take ${expectedDuration} to process. `:"")}
+				{l`Use the results below to prepare your request, and you can always consult our broker-specific guide for step-by-step instructions.`}
+				</Typography>
+			<Stack direction="row" justifyContent="center"><Button variant="outlined" href="https://www.drsgme.org/register-from-broker" target="drs-guide">{l`Broker-specific guides`}</Button></Stack>
+			</>}
+		function usTransfer(){
+			setDisplaySecurities(false)
+			return <>
+			<Typography>{l`${name} cannot DRS transfer, but can transfer to other brokers. To DRS, you will first need to transfer to a broker that can DRS, for example Fidelity. See our Fidelity Route Guide.`}</Typography>
 			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`Fidelity Route Guide`}</Button></Stack>
 			</>}
-		function usRepurchase(){return <>
+		function usRepurchase(){
+			setDisplaySecurities(false)
+			return <>
 			<Typography>
 			{l`${name} cannot DRS transfer, and cannot transfer to other brokers. To DRS, you will need to close out your position and rebuy with a DRS-capable broker or the transfer agent directly.`}
 			</Typography>
 			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`U.S. Sell+Repurchase Guide`}</Button></Stack>
 			</>}
-		function nonusTransfer(){return <>
+		function nonusTransfer(){
+			setDisplaySecurities(false)
+			return <>
 			<Typography>
 			{l`${name} cannot DRS transfer, but can transfer to other brokers. To DRS, you will first need to transfer to a broker that can DRS, for example Interactive Brokers (IBKR).`}
 			</Typography>
 			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`IBKR Route Guide`}</Button></Stack>
 			</>}
-		function nonusExpensive(){return <>
+		function nonusExpensive(){
+			setDisplaySecurities(true)
+			return <>
 			<Typography>
 			{l`${name} can DRS transfer, but charges an excessive fee to do so (${expectedFee}). Although you may DRS directly from this broker, we instead recommend first transfering to a broker that can DRS for a reasonable cost, for example Interactive Brokers (IBKR).`}
 			</Typography>
-			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`IBKR Route Guide`}</Button></Stack>
+			<Stack direction="row" justifyContent="center"><Button variant="outlined" href="#">{l`IBKR Route Guide`}</Button></Stack>
 			</>}
 		function nonusPreexisting(){return <>
 			<Typography>{l`This broker requires a pre-existing account at the transfer agent. See our guide to creating an initial account.`}</Typography>
 			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`Creating an Initial Account Guide`}</Button></Stack>
-			<Typography>{l`You can always consult our broker-specific guide for step-by-step instructions.`}</Typography>
 			</>}
-		function nonusRepurchase(){return <>
+		function nonusRepurchase(){
+			setDisplaySecurities(false)
+			return <>
 			<Typography>{l`${name} cannot DRS transfer, and cannot transfer to other brokers. To DRS, you will need to close out your position and rebuy with a DRS broker or the transfer agent directly.`}</Typography>
 			<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`Non-U.S. Sell+Repurchase Guide`}</Button></Stack>.
 			</>}

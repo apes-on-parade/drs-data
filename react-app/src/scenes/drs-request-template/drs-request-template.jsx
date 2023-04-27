@@ -32,16 +32,21 @@ const DrsRequestTemplateScene = (props) => {
 	const [selectedSecuritiesOptions, setSelectedSecuritiesOptions] = useState([])
 	//const [transferAgents, setTransferAgents] = useState({})
 	//const [accountInfoOptions] = useState(["Standard", "401(k)", "IRA", "Other retirement"])
+	const [displaySecurities,setDisplaySecurities] = useState(true)
+
+	//Contained in state
+	const broker = selectedBrokerOption && brokers[selectedBrokerOption.id]
+	const selectedSecurities = selectedSecuritiesOptions.map(option=>securities[option.id])
+	const attentionNeededSecurities = selectedSecurities.filter(s=>s.readyToSubmit===false).length
 
 	// Effects
 	useAsyncEffect(loadSecurities,[])
 	useAsyncEffect(loadBrokers,[])
 	useAsyncEffect(loadBrokerDetails,[selectedBrokerOption])
 	useAsyncEffect(loadSecurityDetails,[selectedSecuritiesOptions])
+	useEffect(()=>{!broker && setDisplaySecurities(true)},[broker])
 
-	const broker = selectedBrokerOption && brokers[selectedBrokerOption.id]
-	const selectedSecurities = selectedSecuritiesOptions.map(option=>securities[option.id])
-	const attentionNeededSecurities = selectedSecurities.filter(s=>s.readyToSubmit===false).length
+
 
 	return <Stack direction="column" spacing={4} className="project-page">
 		<style>{`@media print {.noprint{display: none;}}`}</style>
@@ -65,29 +70,31 @@ const DrsRequestTemplateScene = (props) => {
 			{broker && (
 				broker.drs===undefined
 					? <Typography>{l`Loading broker details...`}</Typography>
-					: <BrokerDrsSummary broker={broker} />
+					: <BrokerDrsSummary broker={broker} setDisplaySecurities={setDisplaySecurities} />
 				)}
 			</div>
-		<Autocomplete
-			multiple filterSelectedOptions
-			options={securitiesOptions}
-			getOptionLabel={(option) => option.label}
-			value={selectedSecuritiesOptions}
-			onChange={(evt,val)=>setSelectedSecuritiesOptions(val)}
-			renderInput={(params) => (
-				<TextField
-					{...params}
-					label="Securities"
-					placeholder="Securities (stocks/tickers) to DRS"
-					/>
-				)}
-			/>
-		{selectedSecurities.length>0 && <>
-			{attentionNeededSecurities==1 && <Typography className="noprint">⚠️ {attentionNeededSecurities} security requires attention.</Typography>}
-			{attentionNeededSecurities>1 && <Typography className="noprint">⚠️ {attentionNeededSecurities} securities require attention.</Typography>}
-			{selectedSecurities?.map(security =>
-				<SecurityDrsGuide key={security.id} security={security} removeSelf={removeSecurity(security.id)}/>
-				)}
+		{displaySecurities && <>
+			<Autocomplete
+				multiple filterSelectedOptions
+				options={securitiesOptions}
+				getOptionLabel={(option) => option.label}
+				value={selectedSecuritiesOptions}
+				onChange={(evt,val)=>setSelectedSecuritiesOptions(val)}
+				renderInput={(params) => (
+					<TextField
+						{...params}
+						label="Securities"
+						placeholder="Securities (stocks/tickers) to DRS"
+						/>
+					)}
+				/>
+			{selectedSecurities.length>0 && <>
+				{attentionNeededSecurities==1 && <Typography className="noprint">⚠️ {attentionNeededSecurities} security requires attention.</Typography>}
+				{attentionNeededSecurities>1 && <Typography className="noprint">⚠️ {attentionNeededSecurities} securities require attention.</Typography>}
+				{selectedSecurities?.map(security =>
+					<SecurityDrsGuide key={security.id} security={security} removeSelf={removeSecurity(security.id)}/>
+					)}
+				</>}
 			</>}
 		</Stack>
 
