@@ -1,0 +1,1 @@
+{"id":"727a5339","name":"Sparkasse","languages":["English","German"],"country":"DE","drs":{"hasDirect":true,"doesRequireLoi":false,"loiOptions":null,"doesRequireAccount":true,"doesRequestAccount":true,"isExpensive":null,"note":null,"transferToIbkr":false,"transferToOther":false,"transferUnavailable":false,"expectedFee":"$0","expectedDuration":null},"domain":"www.sparkasse.de"}

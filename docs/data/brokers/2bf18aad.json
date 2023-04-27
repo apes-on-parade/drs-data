@@ -1,0 +1,1 @@
+{"id":"2bf18aad","name":"ANZ","languages":["English"],"country":"AU","drs":{"hasDirect":false,"doesRequireLoi":false,"loiOptions":null,"doesRequireAccount":false,"doesRequestAccount":false,"isExpensive":true,"note":"Through IBKR","transferToIbkr":true,"transferToOther":true,"transferUnavailable":false,"expectedFee":"$100(AU)","expectedDuration":null},"domain":"www.anz.com.au"}

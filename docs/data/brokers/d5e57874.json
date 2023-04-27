@@ -1,0 +1,1 @@
+{"id":"d5e57874","name":"CIBC","languages":["English","French"],"country":"CA","drs":{"hasDirect":true,"doesRequireLoi":false,"loiOptions":null,"doesRequireAccount":false,"doesRequestAccount":true,"isExpensive":null,"note":null,"transferToIbkr":false,"transferToOther":false,"transferUnavailable":false,"expectedFee":"$50","expectedDuration":null},"domain":"www.cibc.com"}

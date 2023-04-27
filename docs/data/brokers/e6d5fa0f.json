@@ -1,0 +1,1 @@
+{"id":"e6d5fa0f","name":"US Bank","languages":["English","Spanish"],"country":"US","drs":{"hasDirect":true,"doesRequireLoi":false,"loiOptions":null,"doesRequireAccount":false,"doesRequestAccount":true,"isExpensive":null,"note":null,"transferToIbkr":false,"transferToOther":false,"transferUnavailable":false,"expectedFee":"$0","expectedDuration":null},"domain":"www.usbank.com"}
