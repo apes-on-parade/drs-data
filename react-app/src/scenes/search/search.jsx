@@ -232,18 +232,21 @@ const SearchScene = (props) => {
 		setLocalization(()=>localization)
 		}
 	function* loadIssuers(onCancel){
-		const rawResponse = yield fetch('/issuers.json',canceller(onCancel))
-		const issuers = yield rawResponse.json()
+		const rawResponse = yield fetch('/data/issuers.json',canceller(onCancel))
+		const issuersArr = yield rawResponse.json()
+		const issuers = issuersArr.reduce(indexBy('id'),{})
 		setIssuers(issuers)
 		}
 	function* loadBrokers(onCancel){
-		const rawResponse = yield fetch('/brokers.json',canceller(onCancel))
-		const brokers = yield rawResponse.json()
+		const rawResponse = yield fetch('/data/brokers.json',canceller(onCancel))
+		const brokersArr = yield rawResponse.json()
+		const brokers = brokersArr.reduce(indexBy('id'),{})
 		setBrokers(brokers)
 		}
 	function* loadTransferAgents(onCancel){
-		const rawResponse = yield fetch('/transfer-agents.json',canceller(onCancel))
-		const transferAgents = yield rawResponse.json()
+		const rawResponse = yield fetch('/data/transfer-agents.json',canceller(onCancel))
+		const transferAgentsArr = yield rawResponse.json()
+		const transferAgents = transferAgentsArr.reduce(indexBy('id'),{})
 		setTransferAgents(transferAgents)
 		}
 
