@@ -44,48 +44,51 @@ const DrsRequestTemplateScene = (props) => {
 	const attentionNeededSecurities = selectedSecurities.filter(s=>s.readyToSubmit===false).length
 
 	return <Stack direction="column" spacing={4} className="project-page">
-			<Typography style={{textAlign:"center"}}>This form can help you prepare your DRS request. We do not collect or process information entered here, nor submit the request on your behalf.</Typography>
-			<Stack direction="row" spacing={1}>
-				<Autocomplete
-					style={{ flexGrow: 1 }}
-					options={brokerOptions}
-					getOptionLabel={(option) => option.label}
-					value={selectedBrokerOption}
-					onChange={(evt,val)=>setSelectedBrokerOption(val)}
-					renderInput={(params) => <TextField {...params} label="Broker" placeholder="Your broker" />}
-					/>
-				{/*<Autocomplete
-					style={{ flexGrow: 1 }}
-					options={accountInfoOptions}
-					renderInput={(params) => <TextField {...params} label="Account Type" placeholder="(Optional) Whether your account is a 401(k), IRA, etc." />}
-					/>*/}
-				</Stack>
+		<style>{`@media print {.noprint{display: none;}}`}</style>
+		<Typography className="noprint" style={{textAlign:"center"}}>This form can help you prepare your DRS request. We do not collect or process information entered here, nor submit the request on your behalf.</Typography>
+		<Stack direction="row" spacing={1}>
+			<Autocomplete
+				style={{ flexGrow: 1 }}
+				options={brokerOptions}
+				getOptionLabel={(option) => option.label}
+				value={selectedBrokerOption}
+				onChange={(evt,val)=>setSelectedBrokerOption(val)}
+				renderInput={(params) => <TextField {...params} label="Broker" placeholder="Your broker" />}
+				/>
+			{/*<Autocomplete
+				style={{ flexGrow: 1 }}
+				options={accountInfoOptions}
+				renderInput={(params) => <TextField {...params} label="Account Type" placeholder="(Optional) Whether your account is a 401(k), IRA, etc." />}
+				/>*/}
+			</Stack>
+		<div className="noprint">
 			{broker && (
 				broker.drs===undefined
 					? <Typography>{l`Loading broker details...`}</Typography>
 					: <BrokerDrsSummary broker={broker} />
 				)}
-			<Autocomplete
-				multiple filterSelectedOptions
-				options={securitiesOptions}
-				getOptionLabel={(option) => option.label}
-				value={selectedSecuritiesOptions}
-				onChange={(evt,val)=>setSelectedSecuritiesOptions(val)}
-				renderInput={(params) => (
-					<TextField
-						{...params}
-						label="Securities"
-						placeholder="Securities (stocks/tickers) to DRS"
-						/>
-					)}
-				/>
-			{selectedSecurities.length>0 && <>
-				{attentionNeededSecurities==1 && <Typography>⚠️ {attentionNeededSecurities} security requires attention.</Typography>}
-				{attentionNeededSecurities>1 && <Typography>⚠️ {attentionNeededSecurities} securities require attention.</Typography>}
-				{selectedSecurities?.map(security =>
-					<SecurityDrsGuide key={security.id} security={security} />
-					)}
-				</>}
+			</div>
+		<Autocomplete
+			multiple filterSelectedOptions
+			options={securitiesOptions}
+			getOptionLabel={(option) => option.label}
+			value={selectedSecuritiesOptions}
+			onChange={(evt,val)=>setSelectedSecuritiesOptions(val)}
+			renderInput={(params) => (
+				<TextField
+					{...params}
+					label="Securities"
+					placeholder="Securities (stocks/tickers) to DRS"
+					/>
+				)}
+			/>
+		{selectedSecurities.length>0 && <>
+			{attentionNeededSecurities==1 && <Typography className="noprint">⚠️ {attentionNeededSecurities} security requires attention.</Typography>}
+			{attentionNeededSecurities>1 && <Typography className="noprint">⚠️ {attentionNeededSecurities} securities require attention.</Typography>}
+			{selectedSecurities?.map(security =>
+				<SecurityDrsGuide key={security.id} security={security} removeSelf={removeSecurity(security.id)}/>
+				)}
+			</>}
 		</Stack>
 
 
@@ -179,6 +182,11 @@ const DrsRequestTemplateScene = (props) => {
 			// 	...transferAgents,
 			// 	[transferAgentId]:{...transferAgent, details:"ok", ...transferAgentDetails}
 			// 	})
+			}
+		}
+	function removeSecurity(id){
+		return function(){
+			setSelectedSecuritiesOptions(selectedSecuritiesOptions.filter(opt=>opt.id!==id))
 			}
 		}
 
