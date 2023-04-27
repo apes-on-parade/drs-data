@@ -69,7 +69,7 @@ const DrsRequestTemplateScene = (props) => {
 		<div className="noprint">
 			{broker && (
 				broker.drs===undefined
-					? <Typography>{l`Loading broker details...`}</Typography>
+					? <Typography style={{textAlign:"center"}}>{l`Loading broker details...`}</Typography>
 					: <BrokerDrsSummary broker={broker} setDisplaySecurities={setDisplaySecurities} />
 				)}
 			</div>
@@ -89,8 +89,8 @@ const DrsRequestTemplateScene = (props) => {
 					)}
 				/>
 			{selectedSecurities.length>0 && <>
-				{attentionNeededSecurities==1 && <Typography className="noprint">⚠️ {attentionNeededSecurities} security requires attention.</Typography>}
-				{attentionNeededSecurities>1 && <Typography className="noprint">⚠️ {attentionNeededSecurities} securities require attention.</Typography>}
+				{attentionNeededSecurities==1 && <Typography className="noprint" style={{textAlign:"center"}}>⚠️ {attentionNeededSecurities} security requires attention.</Typography>}
+				{attentionNeededSecurities>1 && <Typography className="noprint" style={{textAlign:"center"}}>⚠️ {attentionNeededSecurities} securities require attention.</Typography>}
 				{selectedSecurities?.map(security =>
 					<SecurityDrsGuide key={security.id} security={security} removeSelf={removeSecurity(security.id)}/>
 					)}
