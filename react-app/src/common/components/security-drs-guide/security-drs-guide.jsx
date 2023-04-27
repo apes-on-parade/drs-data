@@ -45,7 +45,7 @@ const SecurityDrsGuide = function(props){
 	// Effects
 	useEffect(loadTransferAgent,[latestClaimedTransferAgent, readyToSubmit])
 
-	const avatarColor = readyToSubmit === true ? "#006600" : readyToSubmit === false ? "#CC9900" : "#666666"
+	const avatarColor = transferAgent === undefined ? "#666666" : transferAgent === null ? "#CC9900" : "#006600"
 
 	return <div>
 		<style>{`@media print {.noprint{display: none;}}`}</style>

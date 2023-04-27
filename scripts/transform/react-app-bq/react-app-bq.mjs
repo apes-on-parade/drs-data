@@ -19,7 +19,7 @@ async function main() {
 		{id:"securities-detail-drs.sql",output: outputFiles("/react-app/dev-data/data/securities/drs/")},
 		{id:"brokers-index.sql",		output: outputIndex("/react-app/dev-data/data/brokers.json")},
 		{id:"brokers-detail-drs.sql",	output: outputFiles("/react-app/dev-data/data/brokers/")},
-		{id:"transfer-agents.sql",		output: outputIndex("/react-app/dev-data/data/transfer-agents.json")},
+		{id:"transfer-agents-index.sql",	output: outputIndex("/react-app/dev-data/data/transfer-agents.json")},
 		]
 
 	const dryRun = cliArgs.length === 0

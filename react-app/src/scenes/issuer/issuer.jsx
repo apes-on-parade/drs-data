@@ -119,7 +119,7 @@ const IssuerScene = (props) => {
 		if(!issuerId.match(/^[-:a-zA-Z0-9]+$/)){
 			return navigate("/")
 			}
-		const rawResponse = yield fetch(`/issuers/detail/${issuerId}.json`,canceller(onCancel))
+		const rawResponse = yield fetch(`/data/issuers/${issuerId}.json`,canceller(onCancel))
 		const issuer = yield rawResponse.json()
 		setIssuer(issuer)
 		}

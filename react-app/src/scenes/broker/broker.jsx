@@ -41,35 +41,56 @@ const BrokerScene = (props) => {
 				{broker.name}
 				</Typography>
 			<FactRow>
-				<Logo domain={(broker.website.match(/https?:\/\/([^\/:#?]+)/)||[])[1]} />
+				<Logo domain={broker.domain} />
 				</FactRow>
-			{broker.languages
-				&& <FactRow label={l`Languages Spoken`}>
-					<Typography>{broker.languages}</Typography>
+			{broker.country
+				&& <FactRow label={l`Country served`}>
+					<Typography>{broker.country}</Typography>
 					</FactRow>
 				}
-			{broker.drsAvailable !== undefined
+			{broker.languages
+				&& <FactRow label={l`Languages spoken`}>
+					<Typography>{broker.languages.join(", ")}</Typography>
+					</FactRow>
+				}
+			{broker.drs.hasDirect !== undefined
 				&& <FactRow
 					label={l`DRS available`}
-					info={l`Whether the broker allows you to initiate a DRS transfer directly. (Keep in mind, you can still DRS indirectly if not)`}
+					info={l`Whether the broker allows you to initiate a DRS transfer directly. (Keep in mind, you can still DRS indirectly if not.)`}
 					>
-					<Typography>{broker.drsAvailable ? l`Yes` : l`No`}</Typography>
+					<Typography>{broker.drs.hasDirect ? l`Yes` : l`No`}</Typography>
 					</FactRow>
 				}
-			{broker.drsFee
+			{broker.drs.doesRequireAccount
+				&& <FactRow
+					label={l`Requires account?`}
+					info={l`Whether the broker requires you to provide an account number for your existing account at the transfer agent.`}
+					>
+					<Typography>{l`Yes, requires an existing account with the transfer agent`}</Typography>
+					</FactRow>
+				}
+			{broker.drs.doesRequireLoi
+				&& <FactRow
+					label={l`Requires LOI?`}
+					info={l`Whether the broker requires a letter of instruction, and if so whether they will accept an email or online message.`}
+					>
+					<Typography>{[l`Yes`,broker.drs.loiOptions].filter(Boolean).join(", ")}</Typography>
+					</FactRow>
+				}
+			{broker.drs.expectedFee
 				&& <FactRow
 					label={l`DRS Fee`}
 					info={l`Amount charged by the broker to initiate the DRS fee.`}
 					>
-					<Typography>{broker.drsFee}</Typography>
+					<Typography>{broker.drs.expectedFee}</Typography>
 					</FactRow>
 				}
-			{broker.drsDuration
+			{broker.drs.expectedDuration
 				&& <FactRow
 					label={l`DRS duration (d)`}
 					info={l`Typical timeframe, in business days, for this broker to process your DRS request. This is based on information volunteered by customers, and may change without warning.`}
 					>
-					<Typography>{broker.drsDuration}</Typography>
+					<Typography>{broker.drs.expectedDuration} days</Typography>
 					</FactRow>
 				}
 			</Stack></Container>
@@ -79,7 +100,7 @@ const BrokerScene = (props) => {
 		if(!brokerId.match(/^[-a-zA-Z0-9]+$/)){
 			return navigate("/")
 			}
-		const rawResponse = yield fetch(`/brokers/detail/${brokerId}.json`,canceller(onCancel))
+		const rawResponse = yield fetch(`/data/brokers/${brokerId}.json`,canceller(onCancel))
 		const broker = yield rawResponse.json()
 		setBroker(broker)
 		}

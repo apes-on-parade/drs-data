@@ -152,7 +152,7 @@ const SearchScene = (props) => {
 										</Stack>
 									{issuer.tickers?.length &&
 										<Typography sx={{ fontSize: "0.8em" }} color="text.secondary" gutterBottom>
-											{issuer.tickers.map(t=>t.ticker).join(", ")}
+											{issuer.tickers.join(", ")}
 											</Typography>
 										}
 									{issuer.holders && <Typography variant="body2">
@@ -233,20 +233,17 @@ const SearchScene = (props) => {
 		}
 	function* loadIssuers(onCancel){
 		const rawResponse = yield fetch('/data/issuers.json',canceller(onCancel))
-		const issuersArr = yield rawResponse.json()
-		const issuers = issuersArr.reduce(indexBy('id'),{})
+		const issuers = index(yield rawResponse.json())
 		setIssuers(issuers)
 		}
 	function* loadBrokers(onCancel){
 		const rawResponse = yield fetch('/data/brokers.json',canceller(onCancel))
-		const brokersArr = yield rawResponse.json()
-		const brokers = brokersArr.reduce(indexBy('id'),{})
+		const brokers = index(yield rawResponse.json())
 		setBrokers(brokers)
 		}
 	function* loadTransferAgents(onCancel){
 		const rawResponse = yield fetch('/data/transfer-agents.json',canceller(onCancel))
-		const transferAgentsArr = yield rawResponse.json()
-		const transferAgents = transferAgentsArr.reduce(indexBy('id'),{})
+		const transferAgents = index(yield rawResponse.json())
 		setTransferAgents(transferAgents)
 		}
 
@@ -360,5 +357,11 @@ function canceller(onCancel){
 function indexBy(property){
 	return (obj,x,i) => ({...obj,[x[property]]:x})
 	}
-
+function index(arr){
+	let idx = {}
+	for(let i of arr){
+		idx[i.id] = i
+		}
+	return idx
+	}
 export default SearchScene
