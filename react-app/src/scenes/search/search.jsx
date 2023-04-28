@@ -263,7 +263,7 @@ const SearchScene = (props) => {
 				: Object.values(issuers)
 				 	.filter(i =>
 						i.name.toLowerCase().includes(query)
-						|| i.tickers.some(t=>t.ticker.toLowerCase().includes(query))
+						|| i.tickers.some(t=>t.toLowerCase().includes(query))
 						)
 					)
 				.sort((a,b)=>b.holders-a.holders||0)
