@@ -139,11 +139,17 @@ const SecurityDrsGuide = function(props){
 				<CardActions>
 					{(!editingTa && transferAgent===null) && <>
 						<Button size="small" variant="outlined" className="noprint" sx={{margin:"0 5px"}}
-							href={`https://www.sec.gov/edgar/browse/?CIK=${issuerId}`}
+							href={`https://www.sec.gov/edgar/browse/?CIK=${issuerId}`} target="_blank"
 							>Contact issuer</Button>
 						<Button size="small" variant="outlined" className="noprint" sx={{margin:"0 5px"}}
 							onClick={openTaEditor}
 							>Manually set transfer agent</Button>
+						</>}
+					{(!editingTa && transferAgent && !transferAgent.docUrl) && <>
+						<Button size="small" variant="outlined" className="noprint" sx={{margin:"0 5px"}}
+							href={`https://docs.google.com/forms/d/e/1FAIpQLSeYbRsNLz7aIsCjUHHm-JwSY3a4E7zCzFnG0A4tew9t4eK7yA/viewform?entry.1873513074=${ticker}&entry.514341933=${issuer}&entry.260064092=${transferAgent.name}`}
+							target="_blank"
+							>Contribute this TA info to database</Button>
 						</>}
 					</CardActions>
 			</Card>

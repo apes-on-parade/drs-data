@@ -100,7 +100,8 @@ const BrokerDrsSummary = function(props){
 			setDisplaySecurities(true)
 			return <>
 			<Typography style={{textAlign:"center"}}>
-				{l`This broker can DRS, though note that this broker a pre-existing account at the transfer agent.`}\
+				{l`This broker can DRS, though note that this broker requires a pre-existing account at the transfer agent. `}
+				{l`Use the results below to prepare your request, and you can always consult our broker-specific guide for step-by-step instructions.`}
 				</Typography>
 			<Stack direction="row" justifyContent="center"><Button variant="outlined" href="https://www.drsgme.org/register-from-broker" target="drs-guide">{l`Broker-specific guides`}</Button></Stack>
 			{/*<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`Creating an Initial Account Guide`}</Button></Stack>*/}
