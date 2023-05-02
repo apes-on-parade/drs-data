@@ -37,7 +37,8 @@ const DrsRequestTemplateScene = (props) => {
 	//Contained in state
 	const broker = selectedBrokerOption && brokers[selectedBrokerOption.id]
 	const selectedSecurities = selectedSecuritiesOptions.map(option=>securities[option.id])
-	const attentionNeededSecurities = selectedSecurities.filter(s=>s.readyToSubmit===false).length
+	//const attentionNeededSecurities = selectedSecurities.filter(s=>s.readyToSubmit===false).length
+	//TODO: ^ complete this based on s.transferAgent===null, and pass setter to SecurityDrsGuide component
 
 	// Effects
 	useAsyncEffect(loadSecurities,[])
@@ -89,8 +90,8 @@ const DrsRequestTemplateScene = (props) => {
 					)}
 				/>
 			{selectedSecurities.length>0 && <>
-				{attentionNeededSecurities==1 && <Typography className="noprint" style={{textAlign:"center"}}>⚠️ {attentionNeededSecurities} security requires attention.</Typography>}
-				{attentionNeededSecurities>1 && <Typography className="noprint" style={{textAlign:"center"}}>⚠️ {attentionNeededSecurities} securities require attention.</Typography>}
+				{/*attentionNeededSecurities==1 && <Typography className="noprint" style={{textAlign:"center"}}>⚠️ {attentionNeededSecurities} security requires attention.</Typography>}
+				{attentionNeededSecurities>1 && <Typography className="noprint" style={{textAlign:"center"}}>⚠️ {attentionNeededSecurities} securities require attention.</Typography>*/}
 				{selectedSecurities?.map(security =>
 					<SecurityDrsGuide key={security.id} security={security} removeSelf={removeSecurity(security.id)}/>
 					)}
