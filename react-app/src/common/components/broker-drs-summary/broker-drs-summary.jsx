@@ -70,7 +70,7 @@ const BrokerDrsSummary = function(props){
 			<Typography style={{textAlign:"center"}}>
 				{l`${name} cannot DRS transfer, but can transfer to other brokers. To DRS, you will first need to ACAT transfer to a broker that can DRS, for example Fidelity. Then see our Fidelity Route Guide.`}
 				</Typography>
-			<Stack direction="row" justifyContent="center"><Button variant="contained" href="https://www.drsgme.org/post/direct-register-shares-from-fidelity">{l`Fidelity Route Guide`}</Button></Stack>
+			<Stack direction="row" justifyContent="center"><Button variant="contained" href="https://www.drsgme.org/post/direct-register-shares-from-fidelity" target="drs-guide">{l`Fidelity Route Guide`}</Button></Stack>
 			</>}
 		function usRepurchase(){
 			setDisplaySecurities(true)
@@ -86,7 +86,7 @@ const BrokerDrsSummary = function(props){
 			<Typography style={{textAlign:"center"}}>
 				{l`${name} cannot DRS transfer, but can transfer to other brokers. To DRS, you will first need to transfer to a broker that can DRS, for example Interactive Brokers (IBKR).`}
 				</Typography>
-			<Stack direction="row" justifyContent="center"><Button variant="contained" href="https://www.drsgme.org/drs/direct-register-shares-from-interactive-brokers">{l`IBKR Route Guide`}</Button></Stack>
+			<Stack direction="row" justifyContent="center"><Button variant="contained" href="https://www.drsgme.org/drs/direct-register-shares-from-interactive-brokers" target="drs-guide">{l`IBKR Route Guide`}</Button></Stack>
 			</>}
 		function nonusExpensive(){
 			setDisplaySecurities(true)
@@ -94,7 +94,7 @@ const BrokerDrsSummary = function(props){
 			<Typography style={{textAlign:"center"}}>
 				{l`${name} can DRS transfer, but charges an excessive fee to do so (${expectedFee}). Although you may DRS directly from this broker, we instead recommend first transfering to a broker that can DRS for a reasonable cost, for example Interactive Brokers (IBKR).`}
 				</Typography>
-			<Stack direction="row" justifyContent="center"><Button variant="outlined" href="https://www.drsgme.org/drs/direct-register-shares-from-interactive-brokers">{l`IBKR Route Guide`}</Button></Stack>
+			<Stack direction="row" justifyContent="center"><Button variant="outlined" href="https://www.drsgme.org/drs/direct-register-shares-from-interactive-brokers" target="drs-guide">{l`IBKR Route Guide`}</Button></Stack>
 			</>}
 		function nonusPreexisting(){
 			setDisplaySecurities(true)
@@ -104,7 +104,7 @@ const BrokerDrsSummary = function(props){
 				{l`Use the results below to prepare your request, and you can always consult our broker-specific guide for step-by-step instructions.`}
 				</Typography>
 			<Stack direction="row" justifyContent="center"><Button variant="outlined" href="https://www.drsgme.org/register-from-broker" target="drs-guide">{l`Broker-specific guides`}</Button></Stack>
-			{/*<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`Creating an Initial Account Guide`}</Button></Stack>*/}
+			{/*<Stack direction="row" justifyContent="center"><Button variant="contained" href="#" target="drs-guide">{l`Creating an Initial Account Guide`}</Button></Stack>*/}
 			</>}
 		function nonusRepurchase(){
 			setDisplaySecurities(true)
@@ -112,7 +112,7 @@ const BrokerDrsSummary = function(props){
 			<Typography style={{textAlign:"center"}}>
 				{l`${name} cannot DRS transfer, and cannot transfer to other brokers. To DRS, you will need to close out your position and rebuy with a DRS broker or the transfer agent directly.`}
 				</Typography>
-			{/*<Stack direction="row" justifyContent="center"><Button variant="contained" href="#">{l`Non-U.S. Sell+Repurchase Guide`}</Button></Stack>*/}
+			{/*<Stack direction="row" justifyContent="center"><Button variant="contained" href="#" target="drs-guide">{l`Non-U.S. Sell+Repurchase Guide`}</Button></Stack>*/}
 			</>}
 		}
 
