@@ -110,12 +110,12 @@ const SecurityDrsGuide = function(props){
 						</>}
 					{!!(!editingTa && transferAgent===null && !latestClaimedTransferAgent) &&
 						<Typography mb={2} variant="h6" component="div">
-							We do not have information on this issuer's transfer agent.
+							Our database does not yet have information on this issuer's transfer agent.
 							</Typography>
 						}
 					{!!(!editingTa && transferAgent===null && latestClaimedTransferAgent) && <>
 						<Typography mb={2} variant="h6" component="div">
-							We have found multiple conflicting sources on this issuer's transfer agent.
+							Our database has multiple conflicting sources on this issuer's transfer agent.
 							</Typography>
 							<Stack direction="row" spacing={2}>
 								{allClaimedTransferAgents.map((ta,t) => <Card key={t} sx={{minWidth:"200px"}}>
