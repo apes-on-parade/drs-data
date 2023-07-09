@@ -51,7 +51,7 @@ const DrsRequestTemplateScene = (props) => {
 
 	return <Stack direction="column" spacing={4} className="project-page">
 		<style>{`@media print {.noprint{display: none;}}`}</style>
-		<Typography className="noprint" style={{textAlign:"center"}}>This form can help you prepare your DRS request. We do not collect or process information entered here, nor submit the request on your behalf.</Typography>
+		<Typography className="noprint" style={{textAlign:"center"}}>This form can help you prepare your DRS request. This site does not collect or store information entered here, and does not submit the request on your behalf.</Typography>
 		<Stack direction="row" spacing={1}>
 			<Autocomplete
 				style={{ flexGrow: 1 }}
