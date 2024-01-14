@@ -1,28 +1,27 @@
-
 CREATE OR REPLACE TABLE `apes-on-parade-default.src_first_party.curated_tickers_snapshot` AS
 SELECT
-  stockSymbol,
-  exchange,
-  cusip,
-  hasOnlinePurchase,
-  CAST(REPLACE(sharesOutstanding,",","") AS NUMERIC) as sharesOutstanding,
-  sharesDirectRegistered,
+  Ticker as stockSymbol,
+  Exchange as exchange,
+  CUSIP as cusip,
+  Online_Purchase_ as hasOnlinePurchase,
+  CAST(REPLACE(Shares_Outstanding,",","") AS NUMERIC) as sharesOutstanding,
+  __of_Shares_DRS_d as sharesDirectRegistered,
   --Issuer fields
   STRUCT(
-    cik,
-    companyName as name,
-    irEmails,
-    irPhone,
-    irAddress
+    CIK as cik,
+    Company_Name_Issuer as name,
+    IR_Emails as irEmails,
+    IR_Phone__ as irPhone,
+    IR__Company_Address as irAddress,
+    IR_URL as irUrl
   ) as issuer,
   -- Transfer Agent fields
   STRUCT(
-    dtcMemberId,
-    transferAgent as name
+    DTC_Member__ as dtcMemberId,
+    Transfer_Agent as name
   ) as transferAgent,
 
-FROM `apes-on-parade-default.drs_data.gorillionaire_tickers` as t
-WHERE exchange IN ("NYSE", "Nasdaq")
-  AND overallCompletion = "100%"
+FROM `apes-on-parade-default.src_first_party.curated_tickers_sheet` as t
+WHERE Exchange IN ("NYSE", "Nasdaq")
 
---LIMIT 25
+-- LIMIT 100
