@@ -1,104 +1,26 @@
 [
-    {
-        "name": "stockSymbol",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "exchange",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "companyName",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "transferAgent",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "hasOnlinePurchase",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "dtcMemberId",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "transferAgentCompletion",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "irEmails",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "irPhone",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "irAddress",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "irCompletion",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "sharesOutstanding",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "cusip",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "companyCompletion",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "overallCompletion",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "cik",
-        "type": "INTEGER",
-        "mode": "NULLABLE",
-        "description": ""
-    },
-    {
-        "name": "sharesDirectRegistered",
-        "type": "STRING",
-        "mode": "NULLABLE",
-        "description": ""
-    }
+{"name":"Ticker","type":"string","mode":"NULLABLE"},
+{"name":"Exchange","type":"string","mode":"NULLABLE"},
+{"name":"Company_Name_Issuer","type":"string","mode":"NULLABLE"},
+{"name":"Transfer_Agent","type":"string","mode":"NULLABLE"},
+{"name":"Online_Purchase_","type":"string","mode":"NULLABLE"},
+{"name":"DTC_Member__","type":"string","mode":"NULLABLE"},
+{"name":"TA_URL","type":"string","mode":"NULLABLE"},
+{"name":"Transfer_Agent__","type":"string","mode":"NULLABLE"},
+{"name":"IR_Emails","type":"string","mode":"NULLABLE"},
+{"name":"IR_Phone__","type":"string","mode":"NULLABLE"},
+{"name":"IR__Company_Address","type":"string","mode":"NULLABLE"},
+{"name":"IR_URL","type":"string","mode":"NULLABLE"},
+{"name":"IR_Contact_Info","type":"string","mode":"NULLABLE"},
+{"name":"Shares_Outstanding","type":"string","mode":"NULLABLE"},
+{"name":"CUSIP","type":"string","mode":"NULLABLE"},
+{"name":"Company_Info_URL","type":"string","mode":"NULLABLE"},
+{"name":"Company_Info","type":"string","mode":"NULLABLE"},
+{"name":"Full_Progress__","type":"string","mode":"NULLABLE"},
+{"name":"CIK","type":"string","mode":"NULLABLE"},
+{"name":"DRS","type":"string","mode":"NULLABLE"},
+{"name":"__of_Shares_DRS_d","type":"string","mode":"NULLABLE"},
+{"name":"Submission_Received","type":"string","mode":"NULLABLE"},
+{"name":"Timestamps__UTC_","type":"string","mode":"NULLABLE"},
+{"name":"Learn_More_about_DRS","type":"string","mode":"NULLABLE"}
 ]
