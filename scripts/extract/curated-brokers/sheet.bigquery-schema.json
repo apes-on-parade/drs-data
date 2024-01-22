@@ -1,77 +1,36 @@
 [
-    {
-        "name": "name",
-        "type": "STRING",
-        "mode": "REQUIRED"
-    },
-    {
-        "name": "country",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "languages",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "hasDirectDrs",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "requiresExistingAccount",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "requiresLetterOfInstruction",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "note",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "expectedDrsFee",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "expectedDrsDuration",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "contactInfoCompletion",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "phone",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "email",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "mailingAddress",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "website",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    },
-    {
-        "name": "twitter",
-        "type": "STRING",
-        "mode": "NULLABLE"
-    }
+{"name":"Name_of_Broker","type": "STRING","mode": "REQUIRED"},
+{"name":"Country","type": "STRING","mode": "NULLABLE"},
+{"name":"Language_Spoken","type": "STRING","mode": "NULLABLE"},
+{"name":"DRS_Info","type": "STRING","mode": "NULLABLE"},
+{"name":"Direct_DRS_available_","type": "STRING","mode": "NULLABLE"},
+{"name":"CS___Required_","type": "STRING","mode": "NULLABLE"},
+{"name":"Letter_of_instruction_","type": "STRING","mode": "NULLABLE"},
+{"name":"LOI_options","type": "STRING","mode": "NULLABLE"},
+{"name":"_CS_Account_Number_Mentioned__","type": "STRING","mode": "NULLABLE"},
+{"name":"Domestic_US","type": "STRING","mode": "NULLABLE"},
+{"name":"Reseller_or_Saxo_","type": "STRING","mode": "NULLABLE"},
+{"name":"Is_Excessively_Expensive_","type": "STRING","mode": "NULLABLE"},
+{"name":"Transfer_to_another_broker","type": "STRING","mode": "NULLABLE"},
+{"name":"Transfer_to_IBKR","type": "STRING","mode": "NULLABLE"},
+{"name":"Cannot_transfer","type": "STRING","mode": "NULLABLE"},
+{"name":"Reseller_for","type": "STRING","mode": "NULLABLE"},
+{"name":"Expected_Fee","type": "STRING","mode": "NULLABLE"},
+{"name":"Currency_Fee","type": "STRING","mode": "NULLABLE"},
+{"name":"Duration","type": "STRING","mode": "NULLABLE"},
+{"name":"IBKR_Name","type": "STRING","mode": "NULLABLE"},
+{"name":"Notes","type": "STRING","mode": "NULLABLE"},
+{"name":"Contact_Info","type": "STRING","mode": "NULLABLE"},
+{"name":"Phone_Number","type": "STRING","mode": "NULLABLE"},
+{"name":"Email_Address","type": "STRING","mode": "NULLABLE"},
+{"name":"Mailing_Address","type": "STRING","mode": "NULLABLE"},
+{"name":"Website","type": "STRING","mode": "NULLABLE"},
+{"name":"Contact_Page","type": "STRING","mode": "NULLABLE"},
+{"name":"Twitter___X","type": "STRING","mode": "NULLABLE"},
+{"name":"Wix_Text_EN","type": "STRING","mode": "NULLABLE"},
+{"name":"Bespoke_Instructions_en_","type": "STRING","mode": "NULLABLE"},
+{"name":"Wix_Text_DE","type": "STRING","mode": "NULLABLE"},
+{"name":"Bespoke_Instructions_de_","type": "STRING","mode": "NULLABLE"},
+{"name":"Wix_Text_ES","type": "STRING","mode": "NULLABLE"},
+{"name":"Bespoke_Instructions_es_","type": "STRING","mode": "NULLABLE"}
 ]
